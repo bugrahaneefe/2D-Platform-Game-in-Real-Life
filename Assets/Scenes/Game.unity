@@ -338,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3.5
   _bulletPrefab: {fileID: 8775264223796144328, guid: 231c9f5ec7e03486bb593538c24b2d51, type: 3}
+  _bulletmaterialPrefab: {fileID: 4425322464819822880, guid: 3b1442198a58b452891752190f3fddc8, type: 3}
 --- !u!143 &1802790131
 CharacterController:
   m_ObjectHideFlags: 0
@@ -400,7 +401,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class BulletMaterial : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField]
-    private float _speed = 10.0f;
     void Start()
     {
         
@@ -20,13 +18,7 @@ public class Bullet : MonoBehaviour
 
     private void movementCalculation()
     {
-            transform.Translate(Vector3.right * _speed * Time.deltaTime);
-
-        if (transform.position.x >= 9.257071f)
-        {
-            Destroy(gameObject);
-        }
-        if (transform.position.x <= -9.245456f)
+        if (transform.position.y <= -3.98f)
         {
             Destroy(gameObject);
         }

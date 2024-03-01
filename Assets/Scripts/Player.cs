@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -9,6 +10,11 @@ public class Player : MonoBehaviour
     private float _speed = 3.5f;
     [SerializeField]
     private GameObject _bulletPrefab;
+    [SerializeField]
+    private GameObject _bulletmaterialPrefab;
+    private float _canFire = -1f;
+    private float _fireRate = 0.5f;
+
     void Start()
     {
         //_characterController = GetComponent<CharacterController>();
@@ -19,8 +25,13 @@ public class Player : MonoBehaviour
     void Update()
     {
         movementCalculation();
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
-            Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire) {
+            _canFire = Time.time + _fireRate;
+            Instantiate(_bulletPrefab, transform.position + new Vector3(0.8f,0,0), Quaternion.identity);
+            for (int i = 0; i < 5; i++) 
+            {
+                Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f,0,0), Quaternion.identity);
+            }       
         }
     }
 
@@ -32,12 +43,6 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
         transform.Translate(direction * _speed * Time.deltaTime);
-
-        if (Input.GetButtonDown("Jump"))
-        {
-
-            transform.Translate(direction * _speed * Time.deltaTime);
-        }
 
         if (transform.position.x >= 9.257071f)
         {
