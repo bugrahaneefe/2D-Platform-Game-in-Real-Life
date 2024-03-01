@@ -20,8 +20,7 @@ public class Bullet : MonoBehaviour
 
     private void movementCalculation()
     {
-            transform.Translate(Vector3.right * _speed * Time.deltaTime);
-
+        transform.Translate(Vector3.right * _speed * Time.deltaTime);
         if (transform.position.x >= 9.257071f)
         {
             Destroy(gameObject);
@@ -30,5 +29,8 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+                
+
     }
 }
