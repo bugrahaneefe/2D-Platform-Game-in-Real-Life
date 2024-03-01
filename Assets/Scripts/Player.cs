@@ -13,6 +13,9 @@ public class Player : MonoBehaviour
     private GameObject _bulletmaterialPrefab;
     private float _canFire = -1f;
     private float _fireRate = 0.5f;
+
+    private float _canJump = -1f;
+    private float _jumpRate = 1.1f;
     private bool jump;
 
     void Start()
@@ -26,13 +29,18 @@ public class Player : MonoBehaviour
     {
         movement();
         fire();
+        jumping();
+    }
 
+    private void jumping()
+    {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.5f);
 
         if (hit.collider != null) { jump = false; }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !jump)
+        if (Input.GetKeyDown(KeyCode.Space) && (!jump) && (Time.time > _canJump))
         {
+            _canJump = Time.time + _jumpRate;
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
         }
@@ -43,7 +51,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             _canFire = Time.time + _fireRate;
-            Instantiate(_bulletPrefab, transform.position + new Vector3(2.0f, 0, 0), Quaternion.identity);
+            Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f, 0, 0), Quaternion.identity);
             for (int i = 0; i < 5; i++)
             {
                 Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f, 0, 0), Quaternion.identity);

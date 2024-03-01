@@ -17,9 +17,13 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         movementCalculation();
+        hittingFloor();
+    }
 
+    private void hittingFloor()
+    {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.up, 0.5f);
-        if (hit.collider != null) { Destroy(gameObject);; }
+        if (hit.collider != null) { Destroy(gameObject); }
     }
 
     private void movementCalculation()
