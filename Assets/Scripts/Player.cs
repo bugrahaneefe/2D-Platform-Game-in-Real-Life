@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private float _fireRate = 0.5f;
 
     private float _canJump = -1f;
-    private float _jumpRate = 1.1f;
+    private float _jumpRate = 0.7f;
     private bool jump;
 
     void Start()
