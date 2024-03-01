@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -16,6 +17,9 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         movementCalculation();
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.up, 0.5f);
+        if (hit.collider != null) { Destroy(gameObject);; }
     }
 
     private void movementCalculation()
@@ -29,8 +33,5 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-                
-
     }
 }
