@@ -230,6 +230,7 @@ GameObject:
   - component: {fileID: 1802790127}
   - component: {fileID: 1802790126}
   - component: {fileID: 1802790130}
+  - component: {fileID: 1802790131}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -335,7 +336,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75e30977652834a55998c04be34bdc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0
+  _speed: 3.5
+  _bulletPrefab: {fileID: 8775264223796144328, guid: 231c9f5ec7e03486bb593538c24b2d51, type: 3}
+--- !u!143 &1802790131
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802790125}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2077576695
 GameObject:
   m_ObjectHideFlags: 0
