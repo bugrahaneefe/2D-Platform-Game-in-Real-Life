@@ -14,8 +14,8 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
     private float _fireRate = 0.5f;
 
-    private float _canJump = -1f;
-    private float _jumpRate = 0.7f;
+    private float _bulletAngle = 0.0f;
+    private float angleAdjustmentSpeed = 2f;
     private bool jump;
 
     void Start()
@@ -47,10 +47,13 @@ public class Player : MonoBehaviour
 
     private void fire()
     {
+        float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
+        _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
+
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             _canFire = Time.time + _fireRate;
-            Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f, 0, 0), Quaternion.identity);
+            Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f, 0, 0), Quaternion.Euler(0, 0, _bulletAngle));
             for (int i = 0; i < 5; i++)
             {
                 Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f, 0, 0), Quaternion.identity);
