@@ -72,15 +72,40 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
-    
-        if (direction.x < 0.0f) {
+
+        if (direction.x < 0.0f)
+        {
             spriteRenderer.flipX = true;
-        } else if (direction.x > 0.0f) {
+        }
+        else if (direction.x > 0.0f)
+        {
             spriteRenderer.flipX = false;
         }
 
         transform.Translate(direction * _speed * Time.deltaTime);
+        setBoundaries();
+        crouching();
+    }
 
+    private void crouching()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 0.5f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 1.0f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+    }
+
+    private void setBoundaries()
+    {
         if (transform.position.x >= 9.257071f)
         {
             transform.position = new Vector3(9.25707f, transform.position.y, 0);
