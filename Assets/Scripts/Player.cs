@@ -34,13 +34,12 @@ public class Player : MonoBehaviour
 
     private void jumping()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.5f);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.58f);
 
         if (hit.collider != null) { jump = false; }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (!jump) && (Time.time > _canJump))
+        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
         {
-            _canJump = Time.time + _jumpRate;
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
         }

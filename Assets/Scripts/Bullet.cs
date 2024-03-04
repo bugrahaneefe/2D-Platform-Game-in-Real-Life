@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
 
     private void hittingFloor()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.up, 0.5f);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right, 0.5f);
         if (hit.collider != null) { Destroy(gameObject); }
     }
 
