@@ -73,7 +73,11 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
     
-        spriteRenderer.flipX = direction.x < 0.0f;
+        if (direction.x < 0.0f) {
+            spriteRenderer.flipX = true;
+        } else if (direction.x > 0.0f) {
+            spriteRenderer.flipX = false;
+        }
 
         transform.Translate(direction * _speed * Time.deltaTime);
 
