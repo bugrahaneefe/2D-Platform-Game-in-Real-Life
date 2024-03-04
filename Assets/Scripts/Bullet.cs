@@ -7,7 +7,9 @@ public class Bullet : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    private float _speed = 10.0f;
+    private float _speed = 15.0f;
+    private float _direction = 1f;
+
     void Start()
     {
         
@@ -20,6 +22,11 @@ public class Bullet : MonoBehaviour
         hittingFloor();
     }
 
+    public void SetDirection(float direction)
+    {
+        _direction = direction;
+    }
+
     private void hittingFloor()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right, 0.5f);
@@ -28,7 +35,8 @@ public class Bullet : MonoBehaviour
 
     private void movementCalculation()
     {
-        transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        transform.Translate(Vector3.right * _speed * Time.deltaTime * _direction);
+        
         if (transform.position.x >= 9.257071f)
         {
             Destroy(gameObject);

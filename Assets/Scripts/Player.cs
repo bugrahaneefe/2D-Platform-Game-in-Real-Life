@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.UI;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private SpriteRenderer spriteRenderer;
     [SerializeField]
     private float _speed = 5.0f;
     [SerializeField]
@@ -20,8 +22,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        //_characterController = GetComponent<CharacterController>();
-        transform.position = new Vector3(-9.57f,0,0);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        transform.position = new Vector3(-9.57f,-3.0f,0);
     }
 
     // Update is called once per frame
@@ -53,10 +55,15 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             _canFire = Time.time + _fireRate;
-            Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f, 0, 0), Quaternion.Euler(0, 0, _bulletAngle));
+
+            float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
+
+            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
+
+            bullet.GetComponent<Bullet>().SetDirection(bulletDirection);
             for (int i = 0; i < 5; i++)
             {
-                Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f, 0, 0), Quaternion.identity);
+                Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f * bulletDirection, 0, 0), Quaternion.identity);
             }
         }
     }
@@ -64,8 +71,9 @@ public class Player : MonoBehaviour
     private void movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
+    
+        spriteRenderer.flipX = direction.x < 0.0f;
 
         transform.Translate(direction * _speed * Time.deltaTime);
 
