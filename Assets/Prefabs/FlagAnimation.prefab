@@ -96,7 +96,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
-  m_LayoutPriority: 1
+  m_LayoutPriority: 0
 --- !u!114 &-7773417367777506591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,3 +109,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae118b278adf48ff95cc332c21c70eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flag1: {fileID: -8187355101989356663, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag2: {fileID: 3854939560234354291, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag3: {fileID: -2176918498148329165, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag4: {fileID: -1878543983233424424, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag5: {fileID: 7294162130811222863, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag6: {fileID: 5907192917678821646, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag7: {fileID: -3698963325330885405, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag8: {fileID: -7168325035351650290, guid: 27a107940057e8743a507269b18a691a, type: 3}
+  flag9: {fileID: -8728669653598591988, guid: 27a107940057e8743a507269b18a691a, type: 3}
