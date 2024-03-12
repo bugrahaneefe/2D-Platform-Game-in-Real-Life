@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
     {
         movementCalculation();
         hittingFloor();
+        hittingFirstPlayer();
     }
 
     public void SetDirection(float direction)
@@ -29,8 +30,18 @@ public class Bullet : MonoBehaviour
 
     private void hittingFloor()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right, 0.5f);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
         if (hit.collider != null) { Destroy(gameObject); }
+    }
+
+    private void hittingFirstPlayer()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
+        if (hit.collider != null && hit.collider.CompareTag("Player"))
+        {
+            hit.collider.GetComponent<Player>().TakeDamage(1);
+            Destroy(gameObject);
+        }
     }
 
     private void movementCalculation()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -19,14 +20,15 @@ public class Player : MonoBehaviour
     private float _bulletAngle = 0.0f;
     private float angleAdjustmentSpeed = 2f;
     private bool jump;
-
+    public float health, maxHealth;
+    
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
+
     }
 
-    // Update is called once per frame
     void Update()
     {
         movement();
@@ -68,6 +70,16 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        print(health);
+        if (health <= 0)
+        {
+            Debug.Log("Player is dead!");
+        }
+    }
+
     private void movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -89,14 +101,14 @@ public class Player : MonoBehaviour
 
     private void crouching()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             Vector3 scale = transform.localScale;
             scale.y = 0.5f; // Halve the scale of Y-axis
             transform.localScale = scale;
         }
 
-        if (Input.GetKeyUp(KeyCode.Z))
+        if (Input.GetKeyUp(KeyCode.S))
         {
             Vector3 scale = transform.localScale;
             scale.y = 1.0f; // Halve the scale of Y-axis
