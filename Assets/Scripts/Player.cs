@@ -73,7 +73,6 @@ public class Player : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
-        print(health);
         if (health <= 0)
         {
             Debug.Log("Player is dead!");

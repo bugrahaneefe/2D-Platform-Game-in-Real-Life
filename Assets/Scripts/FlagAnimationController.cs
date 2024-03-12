@@ -21,7 +21,7 @@ public class FlagAnimationController : MonoBehaviour
         {
             ClearFlags();
             yield return StartCoroutine(CreateFlag());
-            yield return new WaitForSeconds(0.05f); // Wait for 0.5 seconds before creating the next flag
+            yield return new WaitForSeconds(0.05f);
         }
     }
 
