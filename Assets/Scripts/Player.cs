@@ -131,4 +131,21 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(transform.position.x, -3.98f, 0);
         }
     }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("HorizontalPlatform"))
+        {
+            transform.parent = collision.transform; // Attach player to the platform
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("HorizontalPlatform"))
+        {
+            // Detach player from the platform
+            transform.parent = null;
+        }
+    }
 }
