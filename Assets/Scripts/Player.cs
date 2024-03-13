@@ -21,12 +21,13 @@ public class Player : MonoBehaviour
     private float angleAdjustmentSpeed = 2f;
     private bool jump;
     public float health, maxHealth;
+    private AudioSource _audioSource;
     
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
-
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -61,7 +62,7 @@ public class Player : MonoBehaviour
             float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
 
             GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
-
+            _audioSource.Play();
             bullet.GetComponent<Bullet>().SetDirection(bulletDirection);
             for (int i = 0; i < 5; i++)
             {
