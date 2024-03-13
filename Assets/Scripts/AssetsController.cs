@@ -6,7 +6,7 @@ public class AssetsController : MonoBehaviour
 {
     //Horizontal Platform Logic 1
     [SerializeField]
-    private GameObject _horizontalPlatform;    
+    private GameObject _horizontalPlatform; 
     private float _movementRange = 3f; 
     private float _movementSpeed = 1.5f; 
     private Vector3 _initialPosition;
@@ -15,6 +15,12 @@ public class AssetsController : MonoBehaviour
     [SerializeField] private GameObject _bombPrefab;
     private float _minSpawnDelay = 2f;
     private float _maxSpawnDelay = 5f;
+    //Health point login (prefab)
+    [SerializeField]
+    private GameObject _healthPointPrefab;
+    private GameObject currentHealthPoint;
+    private float _spawnDelayMin = 5f;
+    private float _spawnDelayMax = 15f;   
 
     void Start()
     {
@@ -22,6 +28,7 @@ public class AssetsController : MonoBehaviour
         _initialPosition = _horizontalPlatform.transform.position;
 
          StartCoroutine(SpawnBombs());
+         StartCoroutine(SpawnHealthPoints());
     }
 
     void Update()
@@ -42,4 +49,20 @@ public class AssetsController : MonoBehaviour
         }
     }
 
+    IEnumerator SpawnHealthPoints()
+    {
+        while (true)
+    {
+        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
+
+        if (currentHealthPoint != null)
+        {
+            Destroy(currentHealthPoint);
+        }
+
+        Vector3 spawnPosition = _horizontalPlatform.transform.position + new Vector3(0, 0.5f, 0);
+        currentHealthPoint = Instantiate(_healthPointPrefab, spawnPosition, Quaternion.identity);
+        currentHealthPoint.transform.SetParent(_horizontalPlatform.transform);
+    }
+    }
 }

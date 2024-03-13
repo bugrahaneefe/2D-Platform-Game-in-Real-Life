@@ -79,6 +79,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void GetHealth(float hp) { 
+        
+        health += hp;
+    
+        if (health > maxHealth) {health = maxHealth;}
+    }
+
     private void movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -135,7 +142,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("HorizontalPlatform"))
         {
-            transform.parent = collision.transform; // Attach player to the platform
+            transform.parent = collision.transform;
         }
     }
 
@@ -143,7 +150,6 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("HorizontalPlatform"))
         {
-            // Detach player from the platform
             transform.parent = null;
         }
     }

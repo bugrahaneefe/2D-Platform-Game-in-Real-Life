@@ -12,6 +12,6 @@ public class Bomb : MonoBehaviour
             collision.gameObject.GetComponent<Player>().TakeDamage(1);
         }
 
-        Destroy(gameObject, 0.25f);
+        Destroy(gameObject, 0.1f);
     }
 }
