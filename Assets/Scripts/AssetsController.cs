@@ -13,18 +13,18 @@ public class AssetsController : MonoBehaviour
 
     //Bomb logic (prefab)
     [SerializeField] private GameObject _bombPrefab;
-    private float _minSpawnDelay = 2f;
-    private float _maxSpawnDelay = 5f;
+    private float _minSpawnDelay = 5f;
+    private float _maxSpawnDelay = 15f;
     //Health point login (prefab)
     [SerializeField]
     private GameObject _healthPointPrefab;
     private GameObject currentHealthPoint;
     private float _spawnDelayMin = 5f;
-    private float _spawnDelayMax = 15f;   
+    private float _spawnDelayMax = 10f;   
 
     void Start()
     {
-        _horizontalPlatform.transform.position = new Vector3(-6.26f,0,0);
+        _horizontalPlatform.transform.position = new Vector3(-2.2f,1.83f,0);
         _initialPosition = _horizontalPlatform.transform.position;
 
          StartCoroutine(SpawnBombs());

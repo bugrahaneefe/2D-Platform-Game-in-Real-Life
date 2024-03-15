@@ -5,22 +5,27 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    // Start is called before the first frame update
     [SerializeField]
     private float _speed = 15.0f;
     private float _direction = 1f;
+    private gunType _gunType;
+    private float _size;
 
     void Start()
     {
-        
+        transform.localScale *= _size;
     }
 
-    // Update is called once per frame
     void Update()
     {
         movementCalculation();
-        hittingFloor();
+        HittingFloor();
         hittingFirstPlayer();
+    }
+
+    public void SetGunType(gunType gunType) 
+    {
+        _gunType = gunType;
     }
 
     public void SetDirection(float direction)
@@ -28,7 +33,12 @@ public class Bullet : MonoBehaviour
         _direction = direction;
     }
 
-    private void hittingFloor()
+    public void SetBulletSize(float size)
+    {
+        _size = size;
+    }
+    
+    private void HittingFloor()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
         if (hit.collider != null) { Destroy(gameObject); }
@@ -39,8 +49,23 @@ public class Bullet : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
         if (hit.collider != null && hit.collider.CompareTag("Player"))
         {
-            hit.collider.GetComponent<Player>().TakeDamage(1);
-            Destroy(gameObject);
+            print(_gunType);
+            if (_gunType == gunType.glock) {
+                hit.collider.GetComponent<Player>().TakeDamage(2f);
+                print("glock hit plauer");
+                Destroy(gameObject); 
+            } 
+            if (_gunType == gunType.bombGun) {
+                hit.collider.GetComponent<Player>().TakeDamage(4f);
+                print("shotgun hit plauer");
+                Destroy(gameObject); 
+            }
+            if (_gunType == gunType.machineGun) {
+                hit.collider.GetComponent<Player>().TakeDamage(1);
+                print("shotgun hit plauer");
+                Destroy(gameObject); 
+            }
+
         }
     }
 

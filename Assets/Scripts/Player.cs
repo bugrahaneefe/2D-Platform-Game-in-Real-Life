@@ -15,19 +15,29 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _bulletmaterialPrefab;
     private float _canFire = -1f;
-    private float _fireRate = 0.5f;
+    private float _fireRate = 0.2f;
 
     private float _bulletAngle = 0.0f;
-    private float angleAdjustmentSpeed = 2f;
+    private float angleAdjustmentSpeed = 5f;
     private bool jump;
     public float health, maxHealth;
+    [SerializeField]
+    private AudioClip _gunShotAudioSource;
+    [SerializeField]
+    private AudioClip _bombGunShotAudioSource;
     private AudioSource _audioSource;
+    private gunType _gunType;
     
+    private bool isInvulnerable = false;
+    private float invulnerabilityDuration = 2f;
+    private float invulnerabilityTimer = 0f;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
+       setGunTypeForPlayer(gunType.bombGun);
     }
 
     void Update()
@@ -35,6 +45,24 @@ public class Player : MonoBehaviour
         movement();
         fire();
         jumping();
+        CheckVulnerable();
+    }
+
+    private void CheckVulnerable()
+    {
+        if (isInvulnerable)
+        {
+            float blinkInterval = 0.2f;
+            float timeSinceLastBlink = Time.time - invulnerabilityTimer;
+            bool isVisible = timeSinceLastBlink % (blinkInterval * 2) < blinkInterval;
+            spriteRenderer.enabled = isVisible;
+
+            if (Time.time >= invulnerabilityTimer + invulnerabilityDuration)
+            {
+                spriteRenderer.enabled = true;
+                isInvulnerable = false;
+            }
+        }
     }
 
     private void jumping()
@@ -43,6 +71,11 @@ public class Player : MonoBehaviour
 
         if (hit.collider != null) { jump = false; }
 
+        if (hit.collider != null && hit.collider.CompareTag("Spike"))
+        {
+            TakeDamage(2f);
+            jump = false;
+        }
         if (Input.GetKeyDown(KeyCode.Space) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
@@ -54,16 +87,37 @@ public class Player : MonoBehaviour
     {
         float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
         _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
-
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
+            if (_gunType == gunType.glock) {
+                _fireRate = 0.5f;
+            }
+            if (_gunType == gunType.bombGun) {
+                _fireRate = 1f;
+            }
+            if (_gunType == gunType.machineGun) {
+                _fireRate = 0.15f;
+            }
+            
             _canFire = Time.time + _fireRate;
 
             float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
-
+        
             GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
-            _audioSource.Play();
+            
+            if (_gunType == gunType.bombGun) {
+                bullet.GetComponent<Bullet>().SetBulletSize(4);
+                _audioSource.PlayOneShot(_bombGunShotAudioSource, 0.9f);
+            } else {
+                bullet.GetComponent<Bullet>().SetBulletSize(1);
+                _audioSource.PlayOneShot(_gunShotAudioSource, 0.5f);
+            }
+
             bullet.GetComponent<Bullet>().SetDirection(bulletDirection);
+            bullet.GetComponent<Bullet>().SetGunType(getGunType());
+
+            _audioSource.PlayOneShot(_gunShotAudioSource, 0.7f);
+
             for (int i = 0; i < 5; i++)
             {
                 Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f * bulletDirection, 0, 0), Quaternion.identity);
@@ -71,12 +125,41 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void setGunTypeForPlayer(gunType gunType)
+    {
+        switch (gunType)
+        {
+            case gunType.glock:
+                _gunType = (gunType)1;
+                break;
+            case gunType.bombGun:
+                _gunType = (gunType)2;
+                break;
+            case gunType.machineGun:
+                _gunType = (gunType)3;
+                break;
+        }
+    }
+
+    public gunType getGunType() {
+        return _gunType;
+    }
+
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0)
+        if (!isInvulnerable)
         {
-            Debug.Log("Player is dead!");
+            health -= damage;
+            if (health <= 0)
+            {
+                Debug.Log("Player is dead!");
+            }
+            else
+            {
+                // Trigger invulnerability
+                isInvulnerable = true;
+                invulnerabilityTimer = Time.time;
+            }
         }
     }
 
@@ -154,4 +237,11 @@ public class Player : MonoBehaviour
             transform.parent = null;
         }
     }
+}
+
+public enum gunType {
+
+    glock = 1,
+    bombGun = 2,
+    machineGun = 3
 }
