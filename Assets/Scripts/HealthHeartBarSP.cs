@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class HealthHeartBar : MonoBehaviour
+public class HealthHeartBarSP : MonoBehaviour
 {
     public GameObject heartPrefab;
-    public Player player;
-    List<HealthHeart> hearts = new List<HealthHeart>();
+    public SecondPlayer secondPlayer;
+    List<HealthHeartSP> hearts = new List<HealthHeartSP>();
 
     public void Start() {
         drawHearts();
@@ -20,16 +19,15 @@ public class HealthHeartBar : MonoBehaviour
 
     public void drawHearts() {
         ClearHeart();
-        float maxHealthRemainder = player.maxHealthone % 2;
-        int heartsToMake = (int) ((player.maxHealthone / 2) + maxHealthRemainder);
-
+        float maxHealthRemainder = secondPlayer.maxHealthtwo % 2;
+        int heartsToMake = (int) ((secondPlayer.maxHealthtwo / 2) + maxHealthRemainder);
+        print(heartsToMake);
         for (int i=0; i<heartsToMake; i++) {
             CreateEmptyHeart();
         }
 
         for (int i=0; i<hearts.Count; i++) {
-            print(player.maxHealthone);
-            int heartStatusRemainder = (int)Mathf.Clamp(player.healthone - (i*2), 0, 2);
+            int heartStatusRemainder = (int)Mathf.Clamp(secondPlayer.healhttwo - (i*2), 0, 2);
             hearts[i].setHeartStatus((HeartStatus) heartStatusRemainder);
         }
     }
@@ -38,7 +36,7 @@ public class HealthHeartBar : MonoBehaviour
         GameObject newHeart = Instantiate(heartPrefab);
         newHeart.transform.SetParent(transform);
 
-        HealthHeart heartComponent = newHeart.GetComponent<HealthHeart>();
+        HealthHeartSP heartComponent = newHeart.GetComponent<HealthHeartSP>();
         heartComponent.setHeartStatus(HeartStatus.full);
         hearts.Add(heartComponent);
     }
@@ -46,6 +44,6 @@ public class HealthHeartBar : MonoBehaviour
         foreach (Transform t in transform) {
             Destroy(t.gameObject);
         }
-        hearts = new List<HealthHeart>();
+        hearts = new List<HealthHeartSP>();
     }
 }

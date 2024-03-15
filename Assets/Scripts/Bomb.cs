@@ -21,6 +21,12 @@ public class Bomb : MonoBehaviour
         {
             collision.gameObject.GetComponent<Player>().TakeDamage(1);
         }
+
+        if (collision.gameObject.CompareTag("SecondPlayer"))
+        {
+            collision.gameObject.GetComponent<SecondPlayer>().TakeDamage(1);
+        }
+
         _anim.SetTrigger("OnBombIsExploded");
         _audioSource.Play();
         _rb.simulated = false;

@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour
         movementCalculation();
         HittingFloor();
         hittingFirstPlayer();
+        hittingSecondPlayer();
     }
 
     public void SetGunType(gunType gunType) 
@@ -37,7 +38,7 @@ public class Bullet : MonoBehaviour
     {
         _size = size;
     }
-    
+
     private void HittingFloor()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
@@ -49,20 +50,37 @@ public class Bullet : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
         if (hit.collider != null && hit.collider.CompareTag("Player"))
         {
-            print(_gunType);
             if (_gunType == gunType.glock) {
-                hit.collider.GetComponent<Player>().TakeDamage(2f);
-                print("glock hit plauer");
+                hit.collider.GetComponent<Player>().TakeDamage(1.3f);
                 Destroy(gameObject); 
             } 
             if (_gunType == gunType.bombGun) {
                 hit.collider.GetComponent<Player>().TakeDamage(4f);
-                print("shotgun hit plauer");
                 Destroy(gameObject); 
             }
             if (_gunType == gunType.machineGun) {
-                hit.collider.GetComponent<Player>().TakeDamage(1);
-                print("shotgun hit plauer");
+                hit.collider.GetComponent<Player>().TakeDamage(1.5f);
+                Destroy(gameObject); 
+            }
+
+        }
+    }
+
+    private void hittingSecondPlayer()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _direction, 0.5f);
+        if (hit.collider != null && hit.collider.CompareTag("SecondPlayer"))
+        {
+            if (_gunType == gunType.glock) {
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(2f);
+                Destroy(gameObject); 
+            } 
+            if (_gunType == gunType.bombGun) {
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(4f);
+                Destroy(gameObject); 
+            }
+            if (_gunType == gunType.machineGun) {
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(1);
                 Destroy(gameObject); 
             }
 

@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class SecondPlayer : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     [SerializeField]
@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     private float _bulletAngle = 0.0f;
     private float angleAdjustmentSpeed = 5f;
     private bool jump;
-    public float healthone, maxHealthone;
+    public float healhttwo, maxHealthtwo;
     [SerializeField]
     private AudioClip _gunShotAudioSource;
     [SerializeField]
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        transform.position = new Vector3(-9.57f,-3.0f,0);
+        transform.position = new Vector3(9.09f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
        setGunTypeForPlayer(gunType.glock);
     }
@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
     private void jumping()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.58f);
-
         if (hit.collider != null) { jump = false; }
 
         if (hit.collider != null && hit.collider.CompareTag("Spike"))
@@ -77,7 +76,7 @@ public class Player : MonoBehaviour
             jump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
+        if (Input.GetKeyDown(KeyCode.I) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
@@ -89,7 +88,7 @@ public class Player : MonoBehaviour
         // Will be changed according to gyroscope inputs
         float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
         _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
+        if (Input.GetKeyDown(KeyCode.F) && Time.time > _canFire)
         {
             if (_gunType == gunType.glock) {
                 _fireRate = 0.5f;
@@ -150,10 +149,10 @@ public class Player : MonoBehaviour
     {
         if (!isInvulnerable)
         {
-            healthone -= damage;
-            if (healthone <= 0)
+            healhttwo -= damage;
+            if (healhttwo <= 0)
             {
-                Debug.Log("Player is dead!");
+                Debug.Log("Player2 is dead!");
             }
             else
             {
@@ -165,14 +164,14 @@ public class Player : MonoBehaviour
 
     public void GetHealth(float hp) { 
         
-        healthone += hp;
+        healhttwo += hp;
     
-        if (healthone > maxHealthone) {healthone = maxHealthone;}
+        if (healhttwo > maxHealthtwo) {healhttwo = maxHealthtwo;}
     }
 
     private void movement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
+        float horizontalInput = Input.GetAxis("Horizontal2");
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
 
         if (direction.x < 0.0f)
@@ -191,17 +190,17 @@ public class Player : MonoBehaviour
 
     private void crouching()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             Vector3 scale = transform.localScale;
-            scale.y = 0.5f; // Halve the scale of Y-axis
+            scale.y = 0.5f;
             transform.localScale = scale;
         }
 
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.K))
         {
             Vector3 scale = transform.localScale;
-            scale.y = 1.0f; // Halve the scale of Y-axis
+            scale.y = 1.0f;
             transform.localScale = scale;
         }
     }
@@ -237,11 +236,4 @@ public class Player : MonoBehaviour
             transform.parent = null;
         }
     }
-}
-
-public enum gunType {
-
-    glock = 1,
-    bombGun = 2,
-    machineGun = 3
 }
