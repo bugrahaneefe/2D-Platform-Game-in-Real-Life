@@ -28,7 +28,6 @@ public class HealthHeartBar : MonoBehaviour
         }
 
         for (int i=0; i<hearts.Count; i++) {
-            print(player.maxHealthone);
             int heartStatusRemainder = (int)Mathf.Clamp(player.healthone - (i*2), 0, 2);
             hearts[i].setHeartStatus((HeartStatus) heartStatusRemainder);
         }

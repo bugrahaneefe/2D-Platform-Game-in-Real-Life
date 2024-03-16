@@ -108,6 +108,7 @@ public class Player : MonoBehaviour
         // Will be changed according to gyroscope inputs
         float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
         _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
+                    print("Bullet angle " + _bulletAngle);
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             if (_gunType == gunType.glock) {
@@ -201,15 +202,13 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
-
         if (direction.x < 0.0f)
-    {
+    { 
         spriteRenderer.flipX = true;
         if (currentGunPrefab != null)
         {
             currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1);
             currentGunPrefab.transform.position = transform.position - new Vector3(0.4f,0.1f,0);
-            print(currentGunPrefab);
         }
     }
     else if (direction.x > 0.0f)
@@ -219,7 +218,6 @@ public class Player : MonoBehaviour
         {
             currentGunPrefab.transform.localScale = new Vector3(0.2f, 0.2f, 1);
             currentGunPrefab.transform.position = transform.position + new Vector3(0.4f,-0.1f,0);
-            print(currentGunPrefab);
         }
     }
         transform.Translate(direction * _speed * Time.deltaTime);

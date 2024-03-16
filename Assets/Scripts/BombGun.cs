@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MachineGun : MonoBehaviour
+public class BombGun : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -20,13 +20,13 @@ public class MachineGun : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().setGunTypeForPlayer(gunType.machineGun);
+            collision.gameObject.GetComponent<Player>().setGunTypeForPlayer(gunType.bombGun);
             Destroy(gameObject);
         }
 
         if (collision.gameObject.CompareTag("SecondPlayer"))
         {
-            collision.gameObject.GetComponent<SecondPlayer>().setGunTypeForPlayer(gunType.machineGun);
+            collision.gameObject.GetComponent<SecondPlayer>().setGunTypeForPlayer(gunType.bombGun);
             Destroy(gameObject);
         }
     }

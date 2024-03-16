@@ -27,6 +27,9 @@ public class SecondPlayer : MonoBehaviour
     private AudioClip _bombGunShotAudioSource;
     private AudioSource _audioSource;
     private gunType _gunType;
+    [SerializeField] private GameObject _primaryGunPrefab;
+    [SerializeField] private GameObject _machineGunPrefab;
+    private GameObject currentGunPrefab;
     
     private bool isInvulnerable = false;
     private float invulnerabilityDuration = 2f;
@@ -38,6 +41,9 @@ public class SecondPlayer : MonoBehaviour
         transform.position = new Vector3(9.09f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
        setGunTypeForPlayer(gunType.glock);
+       currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position - new Vector3(0.4f,0.1f,0), Quaternion.identity);
+       currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1); 
+        currentGunPrefab.transform.SetParent(transform);
     }
 
     void Update()
@@ -46,6 +52,19 @@ public class SecondPlayer : MonoBehaviour
         fire();
         jumping();
         CheckVulnerable();
+
+        if (_gunType == gunType.machineGun) 
+        {
+            Destroy(currentGunPrefab);
+            currentGunPrefab = Instantiate(_machineGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.transform.SetParent(transform);
+            currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
+                                                new Vector3(-0.2f, 0.2f, 1) :
+                                                new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = spriteRenderer.flipX ? 
+                                                transform.position - new Vector3(0.4f, 0.1f, 0) : 
+                                                transform.position + new Vector3(0.4f, -0.1f, 0);
+        }
     }
 
     private void CheckVulnerable()
@@ -182,14 +201,24 @@ public class SecondPlayer : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal2");
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
 
-        if (direction.x < 0.0f)
+                if (direction.x < 0.0f)
+    { 
+        spriteRenderer.flipX = true;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = true;
+            currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position - new Vector3(0.4f,0.1f,0);
         }
-        else if (direction.x > 0.0f)
+    }
+    else if (direction.x > 0.0f)
+    {
+        spriteRenderer.flipX = false;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = false;
+            currentGunPrefab.transform.localScale = new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position + new Vector3(0.4f,-0.1f,0);
         }
+    }
 
         transform.Translate(direction * _speed * Time.deltaTime);
         setBoundaries();

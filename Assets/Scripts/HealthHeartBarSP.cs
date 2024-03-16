@@ -21,7 +21,6 @@ public class HealthHeartBarSP : MonoBehaviour
         ClearHeart();
         float maxHealthRemainder = secondPlayer.maxHealthtwo % 2;
         int heartsToMake = (int) ((secondPlayer.maxHealthtwo / 2) + maxHealthRemainder);
-        print(heartsToMake);
         for (int i=0; i<heartsToMake; i++) {
             CreateEmptyHeart();
         }
