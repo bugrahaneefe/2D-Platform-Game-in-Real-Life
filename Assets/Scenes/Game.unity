@@ -285,8 +285,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _horizontalPlatform: {fileID: 68037926}
+  _greenPlatform: {fileID: 1555478946}
   _bombPrefab: {fileID: 6424541848477650119, guid: acceb4744fe05483c9c8d5ca88146444, type: 3}
   _healthPointPrefab: {fileID: 981710286112512388, guid: 61a06cb034d5f4536988c320ff88e360, type: 3}
+  _machineGunPrefab: {fileID: 1509404901870835264, guid: 32c66d2d3a26e4c44bc4ec60f4940b51, type: 3}
 --- !u!212 &68037928
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4567,6 +4569,8 @@ MonoBehaviour:
   maxHealthone: 10
   _gunShotAudioSource: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _bombGunShotAudioSource: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _primaryGunPrefab: {fileID: 172547068625998458, guid: 8740659e27af248ac807e21a07aededb, type: 3}
+  _machineGunPrefab: {fileID: 1509404901870835264, guid: 32c66d2d3a26e4c44bc4ec60f4940b51, type: 3}
 --- !u!212 &2011855290
 SpriteRenderer:
   m_ObjectHideFlags: 0

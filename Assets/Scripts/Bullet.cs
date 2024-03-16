@@ -72,7 +72,7 @@ public class Bullet : MonoBehaviour
         if (hit.collider != null && hit.collider.CompareTag("SecondPlayer"))
         {
             if (_gunType == gunType.glock) {
-                hit.collider.GetComponent<SecondPlayer>().TakeDamage(2f);
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(1.3f);
                 Destroy(gameObject); 
             } 
             if (_gunType == gunType.bombGun) {
@@ -80,7 +80,7 @@ public class Bullet : MonoBehaviour
                 Destroy(gameObject); 
             }
             if (_gunType == gunType.machineGun) {
-                hit.collider.GetComponent<SecondPlayer>().TakeDamage(1);
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(0.7f);
                 Destroy(gameObject); 
             }
 

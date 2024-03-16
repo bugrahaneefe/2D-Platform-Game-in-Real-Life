@@ -9,6 +9,14 @@ public class HealthPoint : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<Player>().GetHealth(2);
+
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("SecondPlayer"))
+        {
+            collision.gameObject.GetComponent<SecondPlayer>().GetHealth(2);
+
             Destroy(gameObject);
         }
     }

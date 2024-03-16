@@ -72,7 +72,7 @@ public class SecondPlayer : MonoBehaviour
 
         if (hit.collider != null && hit.collider.CompareTag("Spike"))
         {
-            TakeDamage(2f);
+            TakeSpikeDamage(2f);
             jump = false;
         }
 
@@ -146,6 +146,14 @@ public class SecondPlayer : MonoBehaviour
     }
 
     public void TakeDamage(float damage)
+    {
+            healhttwo -= damage;
+            if (healhttwo <= 0)
+            {
+                Debug.Log("Player2 is dead!");
+            }
+    }
+    public void TakeSpikeDamage(float damage)
     {
         if (!isInvulnerable)
         {

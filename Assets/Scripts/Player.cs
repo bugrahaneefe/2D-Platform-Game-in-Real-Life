@@ -27,6 +27,9 @@ public class Player : MonoBehaviour
     private AudioClip _bombGunShotAudioSource;
     private AudioSource _audioSource;
     private gunType _gunType;
+    [SerializeField] private GameObject _primaryGunPrefab;
+    [SerializeField] private GameObject _machineGunPrefab;
+    private GameObject currentGunPrefab;
     
     private bool isInvulnerable = false;
     private float invulnerabilityDuration = 2f;
@@ -37,7 +40,9 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
-       setGunTypeForPlayer(gunType.glock);
+        setGunTypeForPlayer(gunType.glock);
+        currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+        currentGunPrefab.transform.SetParent(transform);
     }
 
     void Update()
@@ -46,6 +51,20 @@ public class Player : MonoBehaviour
         fire();
         jumping();
         CheckVulnerable();
+
+        if (_gunType == gunType.machineGun) 
+        {
+            Destroy(currentGunPrefab);
+            currentGunPrefab = Instantiate(_machineGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.transform.SetParent(transform);
+            currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
+                                                new Vector3(-0.2f, 0.2f, 1) :
+                                                new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = spriteRenderer.flipX ? 
+                                                transform.position - new Vector3(0.4f, 0.1f, 0) : 
+                                                transform.position + new Vector3(0.4f, -0.1f, 0);
+        }
+
     }
 
     private void CheckVulnerable()
@@ -73,7 +92,7 @@ public class Player : MonoBehaviour
 
         if (hit.collider != null && hit.collider.CompareTag("Spike"))
         {
-            TakeDamage(2f);
+            TakeSpikeDamage(2f);
             jump = false;
         }
 
@@ -92,13 +111,13 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             if (_gunType == gunType.glock) {
-                _fireRate = 0.5f;
+                _fireRate = 0.6f;
             }
             if (_gunType == gunType.bombGun) {
-                _fireRate = 1f;
+                _fireRate = 1.1f;
             }
             if (_gunType == gunType.machineGun) {
-                _fireRate = 0.15f;
+                _fireRate = 0.07f;
             }
             
             _canFire = Time.time + _fireRate;
@@ -148,6 +167,14 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+            healthone -= damage;
+            if (healthone <= 0)
+            {
+                Debug.Log("Player is dead!");
+            }
+    }
+    public void TakeSpikeDamage(float damage)
+    {
         if (!isInvulnerable)
         {
             healthone -= damage;
@@ -176,14 +203,25 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
 
         if (direction.x < 0.0f)
+    {
+        spriteRenderer.flipX = true;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = true;
+            currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position - new Vector3(0.4f,0.1f,0);
+            print(currentGunPrefab);
         }
-        else if (direction.x > 0.0f)
+    }
+    else if (direction.x > 0.0f)
+    {
+        spriteRenderer.flipX = false;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = false;
+            currentGunPrefab.transform.localScale = new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position + new Vector3(0.4f,-0.1f,0);
+            print(currentGunPrefab);
         }
-
+    }
         transform.Translate(direction * _speed * Time.deltaTime);
         setBoundaries();
         crouching();

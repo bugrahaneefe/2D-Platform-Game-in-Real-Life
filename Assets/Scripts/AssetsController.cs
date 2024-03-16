@@ -10,6 +10,9 @@ public class AssetsController : MonoBehaviour
     private float _movementRange = 3f; 
     private float _movementSpeed = 1.5f; 
     private Vector3 _initialPosition;
+    //Green Platform Logic 1
+    [SerializeField]
+    private GameObject _greenPlatform;
 
     //Bomb logic (prefab)
     [SerializeField] private GameObject _bombPrefab;
@@ -20,7 +23,11 @@ public class AssetsController : MonoBehaviour
     private GameObject _healthPointPrefab;
     private GameObject currentHealthPoint;
     private float _spawnDelayMin = 5f;
-    private float _spawnDelayMax = 10f;   
+    private float _spawnDelayMax = 10f; 
+    //machine gun (prefab)
+    [SerializeField]
+    private GameObject _machineGunPrefab;
+    private GameObject currentMachineGun;
 
     void Start()
     {
@@ -29,6 +36,7 @@ public class AssetsController : MonoBehaviour
 
          StartCoroutine(SpawnBombs());
          StartCoroutine(SpawnHealthPoints());
+         StartCoroutine(SpawnMachineGun());
     }
 
     void Update()
@@ -63,6 +71,23 @@ public class AssetsController : MonoBehaviour
         Vector3 spawnPosition = _horizontalPlatform.transform.position + new Vector3(0, 0.5f, 0);
         currentHealthPoint = Instantiate(_healthPointPrefab, spawnPosition, Quaternion.identity);
         currentHealthPoint.transform.SetParent(_horizontalPlatform.transform);
+    }
+    }
+
+    IEnumerator SpawnMachineGun()
+    {
+        while (true)
+    {
+        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
+
+        if (currentMachineGun != null)
+        {
+            Destroy(currentMachineGun);
+        }
+
+        Vector3 spawnPosition = _greenPlatform.transform.position + new Vector3(0, 1.2f, 0);
+        currentMachineGun = Instantiate(_machineGunPrefab, spawnPosition, Quaternion.identity);
+        currentMachineGun.transform.SetParent(_greenPlatform.transform);
     }
     }
 }
