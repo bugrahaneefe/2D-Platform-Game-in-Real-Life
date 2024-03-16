@@ -120,23 +120,23 @@ public class SecondPlayer : MonoBehaviour
         // Will be changed according to gyroscope inputs
         float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
         _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
-        if (Input.GetKeyDown(KeyCode.F) && Time.time > _canFire)
+        if (Input.GetKeyDown(KeyCode.P) && Time.time > _canFire)
         {
             if (_gunType == gunType.glock) {
-                _fireRate = 0.5f;
+                _fireRate = 0.6f;
             }
             if (_gunType == gunType.bombGun) {
-                _fireRate = 1f;
+                _fireRate = 1.3f;
             }
             if (_gunType == gunType.machineGun) {
-                _fireRate = 0.15f;
+                _fireRate = 0.07f;
             }
             
             _canFire = Time.time + _fireRate;
 
             float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
         
-            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
+            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
             
             if (_gunType == gunType.bombGun) {
                 bullet.GetComponent<Bullet>().SetBulletSize(4);

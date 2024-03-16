@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
             jump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
+        if (Input.GetKeyDown(KeyCode.W) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
                 _fireRate = 0.6f;
             }
             if (_gunType == gunType.bombGun) {
-                _fireRate = 1.1f;
+                _fireRate = 1.3f;
             }
             if (_gunType == gunType.machineGun) {
                 _fireRate = 0.07f;
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
 
             float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
         
-            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
+            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
             
             if (_gunType == gunType.bombGun) {
                 bullet.GetComponent<Bullet>().SetBulletSize(4);
