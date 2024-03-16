@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BombGun : MonoBehaviour
 {
-    private bool canBeCollected = true;
+    private bool _canBeCollected = true;
     void Start()
     {
         
@@ -15,19 +15,22 @@ public class BombGun : MonoBehaviour
         
     }
 
+    public void setBombGunCanBeCollected(bool canBeCollected) {
+        _canBeCollected = canBeCollected;   
+    }
     private void OnCollisionEnter2D(Collision2D collision)
 {
-    if (canBeCollected && collision.gameObject.CompareTag("Player"))
+    if (_canBeCollected && collision.gameObject.CompareTag("Player"))
     {
         collision.gameObject.GetComponent<Player>().setGunTypeForPlayer(gunType.bombGun);
-        canBeCollected = false;
+        _canBeCollected = false;
         Destroy(gameObject);
     }
 
-    if (canBeCollected && collision.gameObject.CompareTag("SecondPlayer"))
+    if (_canBeCollected && collision.gameObject.CompareTag("SecondPlayer"))
     {
         collision.gameObject.GetComponent<SecondPlayer>().setGunTypeForPlayer(gunType.bombGun);
-        canBeCollected = false;
+        _canBeCollected = false;
         Destroy(gameObject);
     }
 }

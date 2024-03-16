@@ -58,6 +58,7 @@ public class SecondPlayer : MonoBehaviour
         {
             Destroy(currentGunPrefab);
             currentGunPrefab = Instantiate(_machineGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.GetComponent<MachineGun>().setMachineGunCanBeCollected(false);
             currentGunPrefab.transform.SetParent(transform);
             currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
                                                 new Vector3(-0.2f, 0.2f, 1) :
@@ -70,6 +71,7 @@ public class SecondPlayer : MonoBehaviour
         {
             Destroy(currentGunPrefab);
             currentGunPrefab = Instantiate(_bombGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.GetComponent<BombGun>().setBombGunCanBeCollected(false);            
             currentGunPrefab.transform.SetParent(transform);
             currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
                                                 new Vector3(-0.2f, 0.2f, 1) :
