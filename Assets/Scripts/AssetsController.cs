@@ -42,10 +42,11 @@ public class AssetsController : MonoBehaviour
     [SerializeField]
     private GameObject _bombGunPrefab;
     private GameObject currentMachineGun;
+    private GameObject currentBombGun;
 
     void Start()
     {
-        _horizontalPlatform.transform.position = new Vector3(-2.2f,1.83f,0);
+        _horizontalPlatform.transform.position = new Vector3(-2.2f,2.1f,0);
         _initialPosition = _horizontalPlatform.transform.position;
 
         StartCoroutine(SpawnBombs());
@@ -113,14 +114,14 @@ public class AssetsController : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
 
-        if (currentMachineGun != null)
+        if (currentBombGun != null)
         {
-            Destroy(currentMachineGun);
+            Destroy(currentBombGun);
         }
 
         Vector3 spawnPosition = _grayPlatform3.transform.position + new Vector3(0, 1.2f, 0);
-        currentMachineGun = Instantiate(_bombGunPrefab, spawnPosition, Quaternion.identity);
-        currentMachineGun.transform.SetParent(_grayPlatform3.transform);
+        currentBombGun = Instantiate(_bombGunPrefab, spawnPosition, Quaternion.identity);
+        currentBombGun.transform.SetParent(_grayPlatform3.transform);
     }
     }
 
@@ -149,7 +150,7 @@ public class AssetsController : MonoBehaviour
 
     IEnumerator MoveTrapUp()
     {
-        while (_grayPlatformTrap1.transform.position.y < -0.84f)
+        while (_grayPlatformTrap1.transform.position.y < -0.13f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.up * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.up * Time.deltaTime);
@@ -162,7 +163,7 @@ public class AssetsController : MonoBehaviour
 
     IEnumerator MoveTrapDown()
     {
-        while (_grayPlatformTrap1.transform.position.y > -1.15f)
+        while (_grayPlatformTrap1.transform.position.y > -0.37f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.down * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.down * Time.deltaTime);

@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private gunType _gunType;
     [SerializeField] private GameObject _primaryGunPrefab;
     [SerializeField] private GameObject _machineGunPrefab;
+    [SerializeField] private GameObject _bombGunPrefab;
     private GameObject currentGunPrefab;
     
     private bool isInvulnerable = false;
@@ -56,6 +57,19 @@ public class Player : MonoBehaviour
         {
             Destroy(currentGunPrefab);
             currentGunPrefab = Instantiate(_machineGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.transform.SetParent(transform);
+            currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
+                                                new Vector3(-0.2f, 0.2f, 1) :
+                                                new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = spriteRenderer.flipX ? 
+                                                transform.position - new Vector3(0.4f, 0.1f, 0) : 
+                                                transform.position + new Vector3(0.4f, -0.1f, 0);
+        }
+
+        if (_gunType == gunType.bombGun) 
+        {
+            Destroy(currentGunPrefab);
+            currentGunPrefab = Instantiate(_bombGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
             currentGunPrefab.transform.SetParent(transform);
             currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
                                                 new Vector3(-0.2f, 0.2f, 1) :
