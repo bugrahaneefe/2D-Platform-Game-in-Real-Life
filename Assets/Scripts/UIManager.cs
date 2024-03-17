@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
         _secondPlayer = GameObject.Find("SecondPlayer").GetComponent<SecondPlayer>();
-        _deadContinue.text = "";
+        _deadContinue.gameObject.SetActive(false);
     }
 
     void Update()
@@ -32,29 +32,32 @@ public class UIManager : MonoBehaviour
         _scoreTextSP.text = "Score: " + _secondPlayer.getScoreSP().ToString();
         if (_secondPlayer.healhttwo <= 0) 
         {
-            
+            _deadContinue.gameObject.SetActive(true);
              _deadText.gameObject.SetActive(true);
             _deadText.text = "Second player is dead";
-            _deadContinue.text = "Fire to continue";
+            _deadContinue.text = "Please jump to continue";
 
-            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.P)) {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.I)) {
                 _secondPlayer.transform.position = new Vector3(9.09f,-3.0f,0);
                 _player.transform.position = new Vector3(-9.57f,-3.0f,0);
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
+                _deadContinue.gameObject.SetActive(false);
             }
         }
         else if (_player.healthone <= 0) 
         {
+            _deadContinue.gameObject.SetActive(true);
             _deadText.gameObject.SetActive(true);
             _deadText.text = "Player is dead";
-            _deadContinue.text = "Fire to continue";
+            _deadContinue.text = "Please jump to continue";
 
-            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.P)) {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.I)) {
                 _secondPlayer.transform.position = new Vector3(9.09f,-3.0f,0);
                 _player.transform.position = new Vector3(-9.57f,-3.0f,0);
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
+                _deadContinue.gameObject.SetActive(false);
             }
 
         } else { _deadText.gameObject.SetActive(false);}
