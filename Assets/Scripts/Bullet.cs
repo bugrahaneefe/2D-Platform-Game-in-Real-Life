@@ -55,11 +55,11 @@ public class Bullet : MonoBehaviour
                 Destroy(gameObject); 
             } 
             if (_gunType == gunType.bombGun) {
-                hit.collider.GetComponent<Player>().TakeDamage(4.5f);
+                hit.collider.GetComponent<Player>().TakeDamage(4f);
                 Destroy(gameObject); 
             }
             if (_gunType == gunType.machineGun) {
-                hit.collider.GetComponent<Player>().TakeDamage(1.5f);
+                hit.collider.GetComponent<Player>().TakeDamage(0.3f);
                 Destroy(gameObject); 
             }
 
@@ -76,11 +76,11 @@ public class Bullet : MonoBehaviour
                 Destroy(gameObject); 
             } 
             if (_gunType == gunType.bombGun) {
-                hit.collider.GetComponent<SecondPlayer>().TakeDamage(4.5f);
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(4f);
                 Destroy(gameObject); 
             }
             if (_gunType == gunType.machineGun) {
-                hit.collider.GetComponent<SecondPlayer>().TakeDamage(0.7f);
+                hit.collider.GetComponent<SecondPlayer>().TakeDamage(0.3f);
                 Destroy(gameObject); 
             }
 

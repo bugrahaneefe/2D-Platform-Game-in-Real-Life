@@ -35,6 +35,10 @@ public class SecondPlayer : MonoBehaviour
     private bool isInvulnerable = false;
     private float invulnerabilityDuration = 2f;
     private float invulnerabilityTimer = 0f;
+    [SerializeField]
+    private int _score;
+    [SerializeField]
+    private Player _player;
 
     void Start()
     {
@@ -45,6 +49,7 @@ public class SecondPlayer : MonoBehaviour
        currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position - new Vector3(0.4f,0.1f,0), Quaternion.identity);
        currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1); 
         currentGunPrefab.transform.SetParent(transform);
+        _player = GameObject.Find("Player").GetComponent<Player>();
     }
 
     void Update()
@@ -184,7 +189,7 @@ public class SecondPlayer : MonoBehaviour
             healhttwo -= damage;
             if (healhttwo <= 0)
             {
-                Debug.Log("Player2 is dead!");
+                _player.setScoreP(_player.getScoreP() + 1);
             }
     }
     public void TakeSpikeDamage(float damage)
@@ -194,7 +199,7 @@ public class SecondPlayer : MonoBehaviour
             healhttwo -= damage;
             if (healhttwo <= 0)
             {
-                Debug.Log("Player2 is dead!");
+                _player.setScoreP(_player.getScoreP() + 1);
             }
             else
             {
@@ -287,5 +292,15 @@ public class SecondPlayer : MonoBehaviour
         {
             transform.parent = null;
         }
+    }
+
+    public void setScoreSP(int score)
+    {
+        _score = score;
+    }
+
+    public int getScoreSP()
+    {
+       return _score;
     }
 }

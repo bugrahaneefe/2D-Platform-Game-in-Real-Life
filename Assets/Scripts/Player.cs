@@ -36,6 +36,11 @@ public class Player : MonoBehaviour
     private float invulnerabilityDuration = 2f;
     private float invulnerabilityTimer = 0f;
 
+    [SerializeField]
+    private int _score;
+    [SerializeField]
+    private SecondPlayer _secondPlayer;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -44,6 +49,7 @@ public class Player : MonoBehaviour
         setGunTypeForPlayer(gunType.glock);
         currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
         currentGunPrefab.transform.SetParent(transform);
+        _secondPlayer = GameObject.Find("SecondPlayer").GetComponent<SecondPlayer>();
     }
 
     void Update()
@@ -112,7 +118,7 @@ public class Player : MonoBehaviour
             jump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.W) && (!jump))
+        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
@@ -186,7 +192,7 @@ public class Player : MonoBehaviour
             healthone -= damage;
             if (healthone <= 0)
             {
-                Debug.Log("Player is dead!");
+                _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
             }
     }
     public void TakeSpikeDamage(float damage)
@@ -196,7 +202,7 @@ public class Player : MonoBehaviour
             healthone -= damage;
             if (healthone <= 0)
             {
-                Debug.Log("Player is dead!");
+                _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
             }
             else
             {
@@ -287,6 +293,16 @@ public class Player : MonoBehaviour
         {
             transform.parent = null;
         }
+    }
+
+    public void setScoreP(int score)
+    {
+        _score = score;
+    }
+
+    public int getScoreP()
+    {
+       return _score;
     }
 }
 
