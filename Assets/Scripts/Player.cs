@@ -119,7 +119,7 @@ public class Player : MonoBehaviour
             jump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
+        if (Input.GetKeyDown(KeyCode.W) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;

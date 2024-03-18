@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _secondPlayer = GameObject.Find("SecondPlayer").GetComponent<SecondPlayer>();
         _deadContinue.gameObject.SetActive(false);
+        _deadQuit.gameObject.SetActive(false);
     }
 
     void Update()
@@ -43,6 +44,7 @@ public class UIManager : MonoBehaviour
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
                 _deadContinue.gameObject.SetActive(false);
+                _deadQuit.gameObject.SetActive(false);
             }
 
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.K)) {
@@ -65,6 +67,7 @@ public class UIManager : MonoBehaviour
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
                 _player._alreadyScored = false;
                 _deadContinue.gameObject.SetActive(false);
+                _deadQuit.gameObject.SetActive(false);
             }
 
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.K))
@@ -83,6 +86,7 @@ public class UIManager : MonoBehaviour
     {
         _deadContinue.gameObject.SetActive(true);
         _deadText.gameObject.SetActive(true);
+        _deadQuit.gameObject.SetActive(true);
         _deadText.text = "Player is dead";
         _deadContinue.text = "Please jump to continue";
         _deadQuit.text = "Please crouch to quit";
