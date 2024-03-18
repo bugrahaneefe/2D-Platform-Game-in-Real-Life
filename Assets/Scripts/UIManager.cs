@@ -46,6 +46,10 @@ public class UIManager : MonoBehaviour
             }
 
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.K)) {
+                SceneManager.LoadScene(1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q)) {
                 SceneManager.LoadScene(0);
             }
         }
@@ -65,9 +69,12 @@ public class UIManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.K))
             {
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(1);
             }
 
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                SceneManager.LoadScene(0);
+            }
         }
         else { _deadText.gameObject.SetActive(false);}
     }
