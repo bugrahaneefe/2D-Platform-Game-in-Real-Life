@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private int _score;
+    public bool _alreadyScored;
     [SerializeField]
     private SecondPlayer _secondPlayer;
 
@@ -192,7 +193,11 @@ public class Player : MonoBehaviour
             healthone -= damage;
             if (healthone <= 0)
             {
-                _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                if (!_alreadyScored)
+                {
+                    _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                    _alreadyScored = true;
+                }
             }
     }
     public void TakeSpikeDamage(float damage)
@@ -202,7 +207,11 @@ public class Player : MonoBehaviour
             healthone -= damage;
             if (healthone <= 0)
             {
-                _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                if (!_alreadyScored)
+                {
+                    _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                    _alreadyScored = true;
+                }
             }
             else
             {

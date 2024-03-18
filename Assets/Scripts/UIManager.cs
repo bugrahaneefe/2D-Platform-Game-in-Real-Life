@@ -57,6 +57,7 @@ public class UIManager : MonoBehaviour
                 _player.transform.position = new Vector3(-9.57f,-3.0f,0);
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
+                _player._alreadyScored = false;
                 _deadContinue.gameObject.SetActive(false);
             }
 

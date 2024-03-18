@@ -189,7 +189,12 @@ public class SecondPlayer : MonoBehaviour
             healhttwo -= damage;
             if (healhttwo <= 0)
             {
-                _player.setScoreP(_player.getScoreP() + 1);
+                if (!_player._alreadyScored)
+                {
+                    _player.setScoreP(_player.getScoreP() + 1);
+                    _player._alreadyScored = true;
+                }
+                
             }
     }
     public void TakeSpikeDamage(float damage)
@@ -199,7 +204,11 @@ public class SecondPlayer : MonoBehaviour
             healhttwo -= damage;
             if (healhttwo <= 0)
             {
-                _player.setScoreP(_player.getScoreP() + 1);
+                if (!_player._alreadyScored)
+                {
+                    _player.setScoreP(_player.getScoreP() + 1);
+                    _player._alreadyScored = true;
+                }            
             }
             else
             {
