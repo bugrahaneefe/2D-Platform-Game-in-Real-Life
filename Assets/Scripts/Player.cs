@@ -44,6 +44,12 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        //MARK: Gyro initialized.
+        if (SystemInfo.supportsGyroscope) {
+            Input.gyro.enabled = true;
+            print("gyro start");
+        }
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
@@ -118,19 +124,47 @@ public class Player : MonoBehaviour
             TakeSpikeDamage(2f);
             jump = false;
         }
-
+        float gyroInputJumping = Input.gyro.rotationRateUnbiased.x;
+        bool jumpingInput;
+        if (gyroInputJumping > 1)
+        {
+            jumpingInput = true;
+        }
+        else
+        {
+            jumpingInput = false;
+        }
+        if (jumpingInput && (!jump))
+        {
+            GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
+            jump = true;
+        }
+        /*
         if (Input.GetKeyDown(KeyCode.W) && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
         }
+        */
     }
 
     private void fire()
     {
         // Will be changed according to gyroscope inputs
-        float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
-        _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
+        /*
+        float gyroInputFireAngle = Input.gyro.rotationRateUnbiased.z;
+        float angleInput;
+        if (gyroInputFireAngle > 0.3 || gyroInputFireAngle < -0.3)
+        {
+            angleInput = gyroInputFireAngle*0.5f;
+        }
+        else
+        {
+            angleInput = 0;
+        }
+        */
+        float angleInput = Input.GetAxis("Mouse ScrollWheel");
+        _bulletAngle += angleInput * angleAdjustmentSpeed;
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
             if (_gunType == gunType.glock) {
@@ -231,6 +265,19 @@ public class Player : MonoBehaviour
     private void movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
+        /*
+        float gyroInputRightLeft = Input.gyro.rotationRateUnbiased.y;
+        print(gyroInputRightLeft);
+        float horizontalInput;
+        if (gyroInputRightLeft > 0.3 || gyroInputRightLeft < -0.3)
+        {
+            horizontalInput = -gyroInputRightLeft*1.5f;
+        }
+        else
+        {
+            horizontalInput = 0;
+        }
+        */
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
         if (direction.x < 0.0f)
     { 
@@ -257,6 +304,34 @@ public class Player : MonoBehaviour
 
     private void crouching()
     {
+        /*
+        float gyroInputCrouching = Input.gyro.rotationRateUnbiased.x;
+        bool crouchingInput;
+        if (gyroInputCrouching < -0.3)
+        {
+            crouchingInput = true;
+            print(crouchingInput);
+        }
+        else
+        {
+            crouchingInput = false;
+        }
+
+        if (crouchingInput)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 0.5f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+
+        if (!crouchingInput)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 1.0f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+        */
+        
         if (Input.GetKeyDown(KeyCode.S))
         {
             Vector3 scale = transform.localScale;
@@ -270,6 +345,7 @@ public class Player : MonoBehaviour
             scale.y = 1.0f; // Halve the scale of Y-axis
             transform.localScale = scale;
         }
+        
     }
 
     private void setBoundaries()
