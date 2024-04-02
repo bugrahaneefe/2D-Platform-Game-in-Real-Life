@@ -20,15 +20,15 @@ public class HealthHeartBar : MonoBehaviour
 
     public void drawHearts() {
         ClearHeart();
-        float maxHealthRemainder = player.maxHealth % 2;
-        int heartsToMake = (int) ((player.maxHealth / 2) + maxHealthRemainder);
+        float maxHealthRemainder = player.maxHealthone % 2;
+        int heartsToMake = (int) ((player.maxHealthone / 2) + maxHealthRemainder);
 
         for (int i=0; i<heartsToMake; i++) {
             CreateEmptyHeart();
         }
 
         for (int i=0; i<hearts.Count; i++) {
-            int heartStatusRemainder = (int)Mathf.Clamp(player.health - (i*2), 0, 2);
+            int heartStatusRemainder = (int)Mathf.Clamp(player.healthone - (i*2), 0, 2);
             hearts[i].setHeartStatus((HeartStatus) heartStatusRemainder);
         }
     }

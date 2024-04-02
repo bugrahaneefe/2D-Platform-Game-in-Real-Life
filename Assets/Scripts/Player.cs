@@ -15,19 +15,48 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _bulletmaterialPrefab;
     private float _canFire = -1f;
-    private float _fireRate = 0.5f;
+    private float _fireRate = 0.2f;
 
     private float _bulletAngle = 0.0f;
-    private float angleAdjustmentSpeed = 2f;
+    private float angleAdjustmentSpeed = 5f;
     private bool jump;
-    public float health, maxHealth;
+    public float healthone, maxHealthone;
+    [SerializeField]
+    private AudioClip _gunShotAudioSource;
+    [SerializeField]
+    private AudioClip _bombGunShotAudioSource;
     private AudioSource _audioSource;
+    private gunType _gunType;
+    [SerializeField] private GameObject _primaryGunPrefab;
+    [SerializeField] private GameObject _machineGunPrefab;
+    [SerializeField] private GameObject _bombGunPrefab;
+    private GameObject currentGunPrefab;
     
+    private bool isInvulnerable = false;
+    private float invulnerabilityDuration = 2f;
+    private float invulnerabilityTimer = 0f;
+
+    [SerializeField]
+    private int _score;
+    public bool _alreadyScored;
+    [SerializeField]
+    private SecondPlayer _secondPlayer;
+
     void Start()
     {
+        //MARK: Gyro initialized.
+        if (SystemInfo.supportsGyroscope) {
+            Input.gyro.enabled = true;
+            print("gyro start");
+        }
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = new Vector3(-9.57f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
+        setGunTypeForPlayer(gunType.glock);
+        currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+        currentGunPrefab.transform.SetParent(transform);
+        _secondPlayer = GameObject.Find("SecondPlayer").GetComponent<SecondPlayer>();
     }
 
     void Update()
@@ -35,6 +64,53 @@ public class Player : MonoBehaviour
         movement();
         fire();
         jumping();
+        CheckVulnerable();
+
+        if (_gunType == gunType.machineGun) 
+        {
+            Destroy(currentGunPrefab);
+            currentGunPrefab = Instantiate(_machineGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.GetComponent<MachineGun>().setMachineGunCanBeCollected(false);
+            currentGunPrefab.transform.SetParent(transform);
+            currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
+                                                new Vector3(-0.2f, 0.2f, 1) :
+                                                new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = spriteRenderer.flipX ? 
+                                                transform.position - new Vector3(0.4f, 0.1f, 0) : 
+                                                transform.position + new Vector3(0.4f, -0.1f, 0);
+        }
+
+        if (_gunType == gunType.bombGun) 
+        {
+            Destroy(currentGunPrefab);
+            currentGunPrefab = Instantiate(_bombGunPrefab, transform.position + new Vector3(0.4f,-0.1f,0), Quaternion.identity);
+            currentGunPrefab.GetComponent<BombGun>().setBombGunCanBeCollected(false);            
+            currentGunPrefab.transform.SetParent(transform);
+            currentGunPrefab.transform.localScale = spriteRenderer.flipX ?
+                                                new Vector3(-0.2f, 0.2f, 1) :
+                                                new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = spriteRenderer.flipX ? 
+                                                transform.position - new Vector3(0.4f, 0.1f, 0) : 
+                                                transform.position + new Vector3(0.4f, -0.1f, 0);
+        }
+
+    }
+
+    private void CheckVulnerable()
+    {
+        if (isInvulnerable)
+        {
+            float blinkInterval = 0.2f;
+            float timeSinceLastBlink = Time.time - invulnerabilityTimer;
+            bool isVisible = timeSinceLastBlink % (blinkInterval * 2) < blinkInterval;
+            spriteRenderer.enabled = isVisible;
+
+            if (Time.time >= invulnerabilityTimer + invulnerabilityDuration)
+            {
+                spriteRenderer.enabled = true;
+                isInvulnerable = false;
+            }
+        }
     }
 
     private void jumping()
@@ -43,27 +119,82 @@ public class Player : MonoBehaviour
 
         if (hit.collider != null) { jump = false; }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (!jump))
+        if (hit.collider != null && hit.collider.CompareTag("Spike"))
+        {
+            TakeSpikeDamage(2f);
+            jump = false;
+        }
+        float gyroInputJumping = Input.gyro.rotationRateUnbiased.x;
+        bool jumpingInput;
+        if (gyroInputJumping > 1)
+        {
+            jumpingInput = true;
+        }
+        else
+        {
+            jumpingInput = false;
+        }
+        if (jumpingInput && (!jump))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
             jump = true;
         }
+        /*
+        if (Input.GetKeyDown(KeyCode.W) && (!jump))
+        {
+            GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
+            jump = true;
+        }
+        */
     }
 
     private void fire()
     {
-        float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
-        _bulletAngle += scrollWheelInput * angleAdjustmentSpeed;
-
+        // Will be changed according to gyroscope inputs
+        /*
+        float gyroInputFireAngle = Input.gyro.rotationRateUnbiased.z;
+        float angleInput;
+        if (gyroInputFireAngle > 0.3 || gyroInputFireAngle < -0.3)
+        {
+            angleInput = gyroInputFireAngle*0.5f;
+        }
+        else
+        {
+            angleInput = 0;
+        }
+        */
+        float angleInput = Input.GetAxis("Mouse ScrollWheel");
+        _bulletAngle += angleInput * angleAdjustmentSpeed;
         if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > _canFire)
         {
+            if (_gunType == gunType.glock) {
+                _fireRate = 0.6f;
+            }
+            if (_gunType == gunType.bombGun) {
+                _fireRate = 1.3f;
+            }
+            if (_gunType == gunType.machineGun) {
+                _fireRate = 0.07f;
+            }
+            
             _canFire = Time.time + _fireRate;
 
             float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
+        
+            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(0.5f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
+            
+            if (_gunType == gunType.bombGun) {
+                bullet.GetComponent<Bullet>().SetBulletSize(4);
+                _audioSource.PlayOneShot(_bombGunShotAudioSource, 0.9f);
+            } else {
+                bullet.GetComponent<Bullet>().SetBulletSize(1);
+                _audioSource.PlayOneShot(_gunShotAudioSource, 0.5f);
+            }
 
-            GameObject bullet = Instantiate(_bulletPrefab, transform.position + new Vector3(1f * bulletDirection, 0, 0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
-            _audioSource.Play();
             bullet.GetComponent<Bullet>().SetDirection(bulletDirection);
+            bullet.GetComponent<Bullet>().SetGunType(getGunType());
+
+
             for (int i = 0; i < 5; i++)
             {
                 Instantiate(_bulletmaterialPrefab, transform.position + new Vector3(0.3f * bulletDirection, 0, 0), Quaternion.identity);
@@ -71,36 +202,101 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void setGunTypeForPlayer(gunType gunType)
+    {
+        switch (gunType)
+        {
+            case gunType.glock:
+                _gunType = (gunType)1;
+                break;
+            case gunType.bombGun:
+                _gunType = (gunType)2;
+                break;
+            case gunType.machineGun:
+                _gunType = (gunType)3;
+                break;
+        }
+    }
+
+    public gunType getGunType() {
+        return _gunType;
+    }
+
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0)
+            healthone -= damage;
+            if (healthone <= 0)
+            {
+                if (!_alreadyScored)
+                {
+                    _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                    _alreadyScored = true;
+                }
+            }
+    }
+    public void TakeSpikeDamage(float damage)
+    {
+        if (!isInvulnerable)
         {
-            Debug.Log("Player is dead!");
+            healthone -= damage;
+            if (healthone <= 0)
+            {
+                if (!_alreadyScored)
+                {
+                    _secondPlayer.setScoreSP(_secondPlayer.getScoreSP() + 1);
+                    _alreadyScored = true;
+                }
+            }
+            else
+            {
+                isInvulnerable = true;
+                invulnerabilityTimer = Time.time;
+            }
         }
     }
 
     public void GetHealth(float hp) { 
         
-        health += hp;
+        healthone += hp;
     
-        if (health > maxHealth) {health = maxHealth;}
+        if (healthone > maxHealthone) {healthone = maxHealthone;}
     }
 
     private void movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
+        /*
+        float gyroInputRightLeft = Input.gyro.rotationRateUnbiased.y;
+        print(gyroInputRightLeft);
+        float horizontalInput;
+        if (gyroInputRightLeft > 0.3 || gyroInputRightLeft < -0.3)
+        {
+            horizontalInput = -gyroInputRightLeft*1.5f;
+        }
+        else
+        {
+            horizontalInput = 0;
+        }
+        */
         Vector3 direction = new Vector3(horizontalInput, 0, 0);
-
         if (direction.x < 0.0f)
+    { 
+        spriteRenderer.flipX = true;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = true;
+            currentGunPrefab.transform.localScale = new Vector3(-0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position - new Vector3(0.4f,0.1f,0);
         }
-        else if (direction.x > 0.0f)
+    }
+    else if (direction.x > 0.0f)
+    {
+        spriteRenderer.flipX = false;
+        if (currentGunPrefab != null)
         {
-            spriteRenderer.flipX = false;
+            currentGunPrefab.transform.localScale = new Vector3(0.2f, 0.2f, 1);
+            currentGunPrefab.transform.position = transform.position + new Vector3(0.4f,-0.1f,0);
         }
-
+    }
         transform.Translate(direction * _speed * Time.deltaTime);
         setBoundaries();
         crouching();
@@ -108,6 +304,34 @@ public class Player : MonoBehaviour
 
     private void crouching()
     {
+        /*
+        float gyroInputCrouching = Input.gyro.rotationRateUnbiased.x;
+        bool crouchingInput;
+        if (gyroInputCrouching < -0.3)
+        {
+            crouchingInput = true;
+            print(crouchingInput);
+        }
+        else
+        {
+            crouchingInput = false;
+        }
+
+        if (crouchingInput)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 0.5f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+
+        if (!crouchingInput)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y = 1.0f; // Halve the scale of Y-axis
+            transform.localScale = scale;
+        }
+        */
+        
         if (Input.GetKeyDown(KeyCode.S))
         {
             Vector3 scale = transform.localScale;
@@ -121,6 +345,7 @@ public class Player : MonoBehaviour
             scale.y = 1.0f; // Halve the scale of Y-axis
             transform.localScale = scale;
         }
+        
     }
 
     private void setBoundaries()
@@ -154,4 +379,21 @@ public class Player : MonoBehaviour
             transform.parent = null;
         }
     }
+
+    public void setScoreP(int score)
+    {
+        _score = score;
+    }
+
+    public int getScoreP()
+    {
+       return _score;
+    }
+}
+
+public enum gunType {
+
+    glock = 1,
+    bombGun = 2,
+    machineGun = 3
 }

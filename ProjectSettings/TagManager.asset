@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - HorizontalPlatform
+  - Spike
+  - SecondPlayer
+  - main_menu_background
   layers:
   - Default
   - TransparentFX
