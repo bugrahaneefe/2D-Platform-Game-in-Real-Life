@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     private Player _player;
     [SerializeField]
     private SecondPlayer _secondPlayer;
+    private AudioSource _audioSource;    
 
     void Start()
     {
@@ -32,17 +33,19 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
+        
         _scoreTextP.text = "Score: " + _player.getScoreP().ToString();
         _scoreTextSP.text = "Score: " + _secondPlayer.getScoreSP().ToString();
         if (_secondPlayer.healhttwo <= 0) 
         {
             DeadScene();
 
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.I)) {
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.I)) {
                 _secondPlayer.transform.position = new Vector3(9.09f,-3.0f,0);
                 _player.transform.position = new Vector3(-9.57f,-3.0f,0);
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
+                AssetsController._alreadyScored = false;
                 _deadContinue.gameObject.SetActive(false);
                 _deadQuit.gameObject.SetActive(false);
             }
@@ -59,13 +62,13 @@ public class UIManager : MonoBehaviour
         {
             DeadScene();
 
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.I))
             {
                 _secondPlayer.transform.position = new Vector3(9.09f, -3.0f, 0);
                 _player.transform.position = new Vector3(-9.57f, -3.0f, 0);
                 _player.healthone = _player.maxHealthone;
                 _secondPlayer.healhttwo = _secondPlayer.maxHealthtwo;
-                _player._alreadyScored = false;
+                AssetsController._alreadyScored = false;
                 _deadContinue.gameObject.SetActive(false);
                 _deadQuit.gameObject.SetActive(false);
             }

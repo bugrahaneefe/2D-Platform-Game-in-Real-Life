@@ -18,7 +18,7 @@ public class BulletMaterial : MonoBehaviour
 
     private void movementCalculation()
     {
-        if (transform.position.y <= -3.98f)
+        if (transform.position.y <= -4.98f)
         {
             Destroy(gameObject);
         }

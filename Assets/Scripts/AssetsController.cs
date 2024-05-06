@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class AssetsController : MonoBehaviour
 {
+    static public bool _alreadyScored = false;
     //Horizontal Platform Logic 1
     [SerializeField]
     private GameObject _horizontalPlatform; 
+    [SerializeField]
+    private GameObject _redPlanePrefab;
+    [SerializeField]
+    private Sprite redPlaneSprite;  // Assign this in the Inspector
+    [SerializeField]
+    private Sprite bluePlaneSprite;
     private float _movementRange = 3f; 
     private float _movementSpeed = 1.5f; 
     private Vector3 _initialPosition;
@@ -41,19 +48,23 @@ public class AssetsController : MonoBehaviour
     //bomb gun (prefab)
     [SerializeField]
     private GameObject _bombGunPrefab;
+    //chest (prefab)
+    [SerializeField]
+    private GameObject _chestPrefab;
     private GameObject currentMachineGun;
     private GameObject currentBombGun;
 
     void Start()
     {
-        _horizontalPlatform.transform.position = new Vector3(-2.2f,2.1f,0);
+        _horizontalPlatform.transform.position = new Vector3(-1.5f,3.1f,0);
+        _horizontalPlatform.transform.localScale = new Vector3(0.5f , 0.5f, 0.5f);
         _initialPosition = _horizontalPlatform.transform.position;
 
-        StartCoroutine(SpawnBombs());
         StartCoroutine(SpawnHealthPoints());
         StartCoroutine(SpawnMachineGun());
         StartCoroutine(SpawnBombGun());
         StartCoroutine(MoveTrapsCoroutine());
+        StartCoroutine(SpawnRedPlane());
     }
 
     void Update()
@@ -64,15 +75,45 @@ public class AssetsController : MonoBehaviour
         _horizontalPlatform.transform.position = newPosition;
     }
 
-    IEnumerator SpawnBombs()
+    
+
+    IEnumerator SpawnRedPlane()
+{
+    while (true)
     {
-        while (true)
+        yield return new WaitForSeconds(Random.Range(_minSpawnDelay, _maxSpawnDelay));
+        float randomY = Random.Range(5.75f, 6.5f);
+        bool spawnFromLeft = Random.Range(0, 2) == 0;
+        float spawnX = spawnFromLeft ? -20.5f : 20.5f;  
+        Vector3 spawnPosition = new Vector3(spawnX, randomY, 0f);
+        Quaternion rotation = spawnFromLeft ? Quaternion.identity : Quaternion.Euler(0, 180, 0);
+        GameObject newPlane = Instantiate(_redPlanePrefab, spawnPosition, rotation);
+
+        SpriteRenderer planeSpriteRenderer = newPlane.GetComponent<SpriteRenderer>();
+
+        if (Random.Range(0, 2) == 0)
         {
-            yield return new WaitForSeconds(Random.Range(_minSpawnDelay, _maxSpawnDelay));
-            float randomX = Random.Range(-10f, 10f);
-            Instantiate(_bombPrefab, new Vector3(randomX, 8f, 0f), Quaternion.identity);
+            planeSpriteRenderer.sprite = bluePlaneSprite;
         }
+        else
+        {
+            planeSpriteRenderer.sprite = redPlaneSprite;
+        }
+
+        yield return new WaitForSeconds(Random.Range(3f, 5f)); 
+
+        if (Random.Range(0, 2) == 0)
+        {
+            Instantiate(_bombPrefab, new Vector3(newPlane.transform.position.x, newPlane.transform.position.y - 0.5f, newPlane.transform.position.z), Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_chestPrefab, new Vector3(newPlane.transform.position.x, newPlane.transform.position.y - 0.5f, newPlane.transform.position.z), Quaternion.identity);
+        }
+        
+        Destroy(newPlane, 7f); 
     }
+}
 
     IEnumerator SpawnHealthPoints()
     {
@@ -92,21 +133,38 @@ public class AssetsController : MonoBehaviour
     }
 
     IEnumerator SpawnMachineGun()
+{
+    while (true)
     {
-        while (true)
-    {
-        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
+        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));  
 
         if (currentMachineGun != null)
         {
             Destroy(currentMachineGun);
         }
 
-        Vector3 spawnPosition = _greenPlatform.transform.position + new Vector3(0, 1.2f, 0);
+        Vector3 spawnPosition = _greenPlatform.transform.position + new Vector3(0, -0.25f, 0);
         currentMachineGun = Instantiate(_machineGunPrefab, spawnPosition, Quaternion.identity);
-        currentMachineGun.transform.SetParent(_greenPlatform.transform);
+        
+        yield return StartCoroutine(MoveMachineGunUp(currentMachineGun, _greenPlatform.transform.position + new Vector3(0, 0.5f, 0)));
+
+        yield return new WaitForSeconds(5f); 
+
+        Destroy(currentMachineGun);
     }
+}
+
+IEnumerator MoveMachineGunUp(GameObject machineGun, Vector3 targetPosition)
+{
+    while (machineGun.transform.position.y < targetPosition.y)
+    {
+        machineGun.transform.Translate(Vector3.up * Time.deltaTime);
+        yield return null;
     }
+
+    machineGun.transform.SetParent(_greenPlatform.transform); 
+}
+
 
     IEnumerator SpawnBombGun()
     {
@@ -119,7 +177,7 @@ public class AssetsController : MonoBehaviour
             Destroy(currentBombGun);
         }
 
-        Vector3 spawnPosition = _grayPlatform3.transform.position + new Vector3(0, 1.2f, 0);
+        Vector3 spawnPosition = _grayPlatform3.transform.position + new Vector3(0, 0.7f, 0);
         currentBombGun = Instantiate(_bombGunPrefab, spawnPosition, Quaternion.identity);
         currentBombGun.transform.SetParent(_grayPlatform3.transform);
     }
@@ -130,7 +188,7 @@ public class AssetsController : MonoBehaviour
     {
         while (true)
         {
-            float delay = Random.Range(3f, 6f);
+            float delay = Random.Range(1f, 4f);
             yield return new WaitForSeconds(delay);
 
             if (!isCoroutineRunning)
@@ -150,7 +208,7 @@ public class AssetsController : MonoBehaviour
 
     IEnumerator MoveTrapUp()
     {
-        while (_grayPlatformTrap1.transform.position.y < -0.13f)
+        while (_grayPlatformTrap1.transform.position.y < -0.80f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.up * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.up * Time.deltaTime);
@@ -163,7 +221,7 @@ public class AssetsController : MonoBehaviour
 
     IEnumerator MoveTrapDown()
     {
-        while (_grayPlatformTrap1.transform.position.y > -0.37f)
+        while (_grayPlatformTrap1.transform.position.y > -0.93f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.down * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.down * Time.deltaTime);
