@@ -3,7 +3,8 @@ guid: 5078c9d45a06d4e6f99cc2e69ca6398e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _gunTakenAudioSource: {fileID: 8300000, guid: 46b0a53c70b464755842fcb3d3bd5dc2, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

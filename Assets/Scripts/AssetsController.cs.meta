@@ -3,7 +3,17 @@ guid: 22e60e04e08a14751acafa727abcf586
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _horizontalPlatform: {instanceID: 0}
+  - _greenPlatform: {instanceID: 0}
+  - _grayPlatformTrap1: {instanceID: 0}
+  - _grayPlatformTrap2: {instanceID: 0}
+  - _grayPlatform3: {instanceID: 0}
+  - _bombPrefab: {instanceID: 0}
+  - _healthPointPrefab: {instanceID: 0}
+  - _machineGunPrefab: {instanceID: 0}
+  - _bombGunPrefab: {instanceID: 0}
+  - _chestPrefab: {fileID: 7049988892894209043, guid: d4712ad40785b4ec98be7f90546a4caf, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

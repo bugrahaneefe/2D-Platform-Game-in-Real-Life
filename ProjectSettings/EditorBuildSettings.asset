@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 50921f4e827254ce6954700bdaf77267
+  - enabled: 1
+    path: Assets/Scenes/ArduinoCalibration.unity
+    guid: b74fe630e2b16485faf6b40306398a33
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 839c7aff304624693b9395510c1194c1
   m_configObjects: {}

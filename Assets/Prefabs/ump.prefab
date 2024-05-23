@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 1509404901870835264}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.5, y: -2.13, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
+  m_LocalPosition: {x: 0.98, y: -2.92, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5078c9d45a06d4e6f99cc2e69ca6398e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gunTakenAudioSource: {fileID: 8300000, guid: 46b0a53c70b464755842fcb3d3bd5dc2, type: 3}
 --- !u!61 &5991876210115428203
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -130,7 +131,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.4891841, y: 0.6352345}
+  m_Offset: {x: -1.4014705, y: -0.20982775}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -141,5 +142,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4948902, y: 0.55112123}
+  m_Size: {x: 3.6026413, y: 1.9687483}
   m_EdgeRadius: 0

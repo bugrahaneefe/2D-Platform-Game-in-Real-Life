@@ -5,9 +5,9 @@ using UnityEngine;
 public class MachineGun : MonoBehaviour
 {
     private bool _canBeCollected = true;
+
     void Start()
     {
-        
     }
 
     void Update()

@@ -81,6 +81,6 @@ public class MainMenuController : MonoBehaviour
             yield return null;
         }
 
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(3);
     }
 }
