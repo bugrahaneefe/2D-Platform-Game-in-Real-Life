@@ -12,5 +12,6 @@
 
 ## Hardware
 
-![WhatsApp Image 2024-05-23 at 11 56 33-4](https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/f57b7bd3-895c-4df3-950e-6f9e6b66f32d)
-![WhatsApp Image 2024-05-23 at 11 56 33-5](https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/f83e2d32-b5a6-4b2c-aa5c-2e2b7bdbe51c)
+<img width="595" alt="Screenshot 2024-05-23 at 13 38 51" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/03bf39d0-4b94-4b49-90e5-9619d0cdbd07">
+<img width="786" alt="Screenshot 2024-05-23 at 13 39 00" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/195ba026-b531-4fee-a8cb-23b111855154">
+
