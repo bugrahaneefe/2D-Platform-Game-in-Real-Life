@@ -1,3 +1,4 @@
-<img width="1132" alt="Screenshot 2024-03-20 at 10 32 57" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/108753c1-60bf-47cb-87eb-d550b7df40c1">
-<img width="1134" alt="Screenshot 2024-03-20 at 10 31 43" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/1eebf8a0-86b9-4a81-a2eb-812d4568aa53">
-<img width="1134" alt="Screenshot 2024-03-20 at 10 31 26" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/821e9503-f753-4cea-a3da-12064259ebb6">
+<img width="972" alt="Screenshot 2024-05-23 at 13 17 21" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/e35ab89b-8fda-497a-8a66-044fc61f645b">
+<img width="974" alt="Screenshot 2024-05-23 at 13 17 40" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/6e82cac1-ad65-4ccc-8204-0b35d9b03e4a">
+<img width="975" alt="Screenshot 2024-05-23 at 13 17 59" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/875c80b4-fe3d-4fca-8a4a-8c8823bcaa60">
+<img width="975" alt="Screenshot 2024-05-23 at 13 17 49" src="https://github.com/bugrahaneefe/2D-Platform-Game-in-Real-Life/assets/114180327/8b403460-94cd-4c7a-9572-11cebfc10a6a">
