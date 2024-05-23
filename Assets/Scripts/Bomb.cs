@@ -19,12 +19,12 @@ public class Bomb : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().TakeDamage(1, gunType.bombGun);
+            collision.gameObject.GetComponent<Player>().TakeDamage(2, gunType.bombGun);
         }
 
         if (collision.gameObject.CompareTag("SecondPlayer"))
         {
-            collision.gameObject.GetComponent<SecondPlayer>().TakeDamage(1, gunType.bombGun);
+            collision.gameObject.GetComponent<SecondPlayer>().TakeDamage(2, gunType.bombGun);
         }
 
         _anim.SetTrigger("OnBombIsExploded");

@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 7049988892894209043}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.41, y: -3.83, z: 0}
+  m_LocalPosition: {x: -3.576, y: -0.449, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -123,7 +123,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openSound: {fileID: 8300000, guid: 35e3c7ef769644824a02794eed1c5002, type: 3}
-  healthPointPrefab: {fileID: 981710286112512388, guid: 61a06cb034d5f4536988c320ff88e360, type: 3}
+  _healthPointPrefab: {fileID: 981710286112512388, guid: 61a06cb034d5f4536988c320ff88e360, type: 3}
+  _coinSmallerPrefab: {fileID: 5490311841491818669, guid: c2826597caed544d89bd36c551021d6d, type: 3}
+  _bombPrefab: {fileID: 6424541848477650119, guid: acceb4744fe05483c9c8d5ca88146444, type: 3}
+  _gemPrefab: {fileID: 3380185184131766448, guid: 29f402591ffdc4bb8b213022dbe73027, type: 3}
   _awpPrefab: {fileID: 1143665753209398724, guid: 99aacbf009cd84b00a4df8994f494451, type: 3}
   bounceForce: 5
 --- !u!50 &7507707705425448982

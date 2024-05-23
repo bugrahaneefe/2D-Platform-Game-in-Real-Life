@@ -9,6 +9,8 @@ public class AssetsController : MonoBehaviour
     [SerializeField]
     private GameObject _horizontalPlatform; 
     [SerializeField]
+    private GameObject _hpCrate; 
+    [SerializeField]
     private GameObject _redPlanePrefab;
     [SerializeField]
     private Sprite redPlaneSprite;  // Assign this in the Inspector
@@ -40,31 +42,42 @@ public class AssetsController : MonoBehaviour
     [SerializeField]
     private GameObject _healthPointPrefab;
     private GameObject currentHealthPoint;
+    [SerializeField]
+    private GameObject _healthPointPrefab2;
+    private GameObject currentHealthPoint2;
     private float _spawnDelayMin = 5f;
     private float _spawnDelayMax = 10f; 
     //machine gun (prefab)
     [SerializeField]
     private GameObject _machineGunPrefab;
+    //awp gun (prefab)
+    [SerializeField]
+    private GameObject _awpPrefab;
+    [SerializeField]
+    private GameObject _awpPrefabPlatform;
     //bomb gun (prefab)
     [SerializeField]
     private GameObject _bombGunPrefab;
     //chest (prefab)
     [SerializeField]
     private GameObject _chestPrefab;
+    private GameObject currentAwp;
     private GameObject currentMachineGun;
     private GameObject currentBombGun;
 
     void Start()
     {
-        _horizontalPlatform.transform.position = new Vector3(-1.5f,3.1f,0);
-        _horizontalPlatform.transform.localScale = new Vector3(0.5f , 0.5f, 0.5f);
+        _horizontalPlatform.transform.position = new Vector3(1.6f,4.7f,0);
+        _horizontalPlatform.transform.localScale = new Vector3(1f , 0.5f, 0.5f);
         _initialPosition = _horizontalPlatform.transform.position;
 
         StartCoroutine(SpawnHealthPoints());
+        StartCoroutine(SpawnHealthPointsPositionTwo());
         StartCoroutine(SpawnMachineGun());
         StartCoroutine(SpawnBombGun());
         StartCoroutine(MoveTrapsCoroutine());
         StartCoroutine(SpawnRedPlane());
+        StartCoroutine(SpawnAwp());
     }
 
     void Update()
@@ -75,13 +88,12 @@ public class AssetsController : MonoBehaviour
         _horizontalPlatform.transform.position = newPosition;
     }
 
-    
 
     IEnumerator SpawnRedPlane()
 {
     while (true)
     {
-        yield return new WaitForSeconds(Random.Range(_minSpawnDelay, _maxSpawnDelay));
+        yield return new WaitForSeconds(Random.Range(10, _maxSpawnDelay));
         float randomY = Random.Range(5.75f, 6.5f);
         bool spawnFromLeft = Random.Range(0, 2) == 0;
         float spawnX = spawnFromLeft ? -20.5f : 20.5f;  
@@ -102,7 +114,7 @@ public class AssetsController : MonoBehaviour
 
         yield return new WaitForSeconds(Random.Range(3f, 5f)); 
 
-        if (Random.Range(0, 2) == 0)
+        if (Random.Range(0, 4) == 0)
         {
             Instantiate(_bombPrefab, new Vector3(newPlane.transform.position.x, newPlane.transform.position.y - 0.5f, newPlane.transform.position.z), Quaternion.identity);
         }
@@ -129,6 +141,40 @@ public class AssetsController : MonoBehaviour
         Vector3 spawnPosition = _horizontalPlatform.transform.position + new Vector3(0, 0.5f, 0);
         currentHealthPoint = Instantiate(_healthPointPrefab, spawnPosition, Quaternion.identity);
         currentHealthPoint.transform.SetParent(_horizontalPlatform.transform);
+    }
+    }
+
+    IEnumerator SpawnHealthPointsPositionTwo()
+    {
+        while (true)
+    {
+        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
+
+        if (currentHealthPoint2 != null)
+        {
+            Destroy(currentHealthPoint2);
+        }
+
+        Vector3 spawnPosition = _hpCrate.transform.position + new Vector3(0, 0.5f, 0);
+        currentHealthPoint2 = Instantiate(_healthPointPrefab2, spawnPosition, Quaternion.identity);
+        currentHealthPoint2.transform.SetParent(_hpCrate.transform);
+    }
+    }
+
+    IEnumerator SpawnAwp()
+    {
+        while (true)
+    {
+        yield return new WaitForSeconds(Random.Range(_spawnDelayMin, _spawnDelayMax));
+
+        if (currentAwp != null)
+        {
+            Destroy(currentAwp);
+        }
+
+        Vector3 spawnPosition = _awpPrefabPlatform.transform.position + new Vector3(0, 1f, 0);
+        currentAwp = Instantiate(_awpPrefab, spawnPosition, Quaternion.identity);
+        currentAwp.transform.SetParent(_awpPrefab.transform);
     }
     }
 
@@ -208,7 +254,7 @@ IEnumerator MoveMachineGunUp(GameObject machineGun, Vector3 targetPosition)
 
     IEnumerator MoveTrapUp()
     {
-        while (_grayPlatformTrap1.transform.position.y < -0.80f)
+        while (_grayPlatformTrap1.transform.position.y < -1.85f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.up * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.up * Time.deltaTime);
@@ -221,7 +267,7 @@ IEnumerator MoveMachineGunUp(GameObject machineGun, Vector3 targetPosition)
 
     IEnumerator MoveTrapDown()
     {
-        while (_grayPlatformTrap1.transform.position.y > -0.93f)
+        while (_grayPlatformTrap1.transform.position.y > -2f)
         {
             _grayPlatformTrap1.transform.Translate(Vector3.down * Time.deltaTime);
             _grayPlatformTrap2.transform.Translate(Vector3.down * Time.deltaTime);

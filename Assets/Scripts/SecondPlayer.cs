@@ -64,17 +64,22 @@ public class SecondPlayer : MonoBehaviour
 
     // Arduino related variables.
     [SerializeField]
-    private ArduinoController arduinoController;
+    private ArduinoController_2 arduinoController_2;
     private float xInput;
     private float yInput;
-    private float zInput;
+    private float angleInputAcc;
     private float fireInput = 100;
+    private float jumpCooldown = 1.6f;
+    private float lastJumpTime = 0f;   
+    private int jumpCount = 0;
+    public bool contGameSPlayer = false;
+    public bool restartGameSPlayer = false;
+
 
     void Start()
     {
-        arduinoController = GetComponent<ArduinoController>(); 
+        arduinoController_2 = GetComponent<ArduinoController_2>(); 
         spriteRenderer = GetComponent<SpriteRenderer>();
-        transform.position = new Vector3(9.09f,-3.0f,0);
         _audioSource = GetComponent<AudioSource>();
        setGunTypeForPlayer(gunType.glock);
        currentGunPrefab = Instantiate(_primaryGunPrefab, transform.position - new Vector3(0.2f,0.1f,0), Quaternion.identity);
@@ -86,9 +91,9 @@ public class SecondPlayer : MonoBehaviour
     void Update()
     {
         // Process data received from arduino
-        //ProcessSerialData(arduinoController.LatestData);
+        ProcessSerialData(arduinoController_2.LatestData_2);
         movement();
-        fire();
+        //fire();
         jumping();
         CheckVulnerable();
 
@@ -132,6 +137,23 @@ public class SecondPlayer : MonoBehaviour
                                                 transform.position - new Vector3(0.2f, 0.1f, 0) : 
                                                 transform.position + new Vector3(0.2f, -0.1f, 0);
         }
+
+        // Rotating angle of the gun
+        float rotationAngle = angleInputAcc * angleAdjustmentSpeed * 10;
+        if (spriteRenderer.flipX)
+        {
+            rotationAngle = -(angleInputAcc * angleAdjustmentSpeed * 10);
+        }
+        currentGunPrefab.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+        if (healhttwo <= 0) {
+            if (yInput > 0.3f) {
+                contGameSPlayer = true;
+            }
+            if (yInput < -0.25f) {
+                restartGameSPlayer = true;
+            }
+        }
     }
 
     private void ProcessSerialData(string data)
@@ -139,57 +161,51 @@ public class SecondPlayer : MonoBehaviour
     Debug.Log("Data received: " + data);
     string[] parts = data.Split(',');
 
+    // Additional variable to store the sensor value
+    float sensorValue = 0.0f;
+
     foreach (var part in parts)
     {
-        if (part.StartsWith("Sensor:"))
+        string trimmedPart = part.Trim();
+        int colonIndex = trimmedPart.IndexOf(':');
+        if (colonIndex > 0)  // Ensure there is a colon in the string
         {
-            string sensorPart = part.Substring(7); // Remove "Sensor:"
-            if (float.TryParse(sensorPart, out float fireInput))
+            string key = trimmedPart.Substring(0, colonIndex).Trim();
+            string value = trimmedPart.Substring(colonIndex + 1).Trim();
+
+            if (float.TryParse(value, out float parsedValue))
             {
-                //Debug.Log("Sensor value: " + fireInput);
-                if (fireInput < 60) {
+                switch (key)
+                {
+                    case "x1":
+                        xInput = parsedValue;
+                        break;
+                    case "y1":
+                        yInput = parsedValue;
+                        break;
+                    case "y2":
+                        angleInputAcc = parsedValue;
+                        break;
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to parse value for " + key);
+            }
+        }
+        else  
+        {
+            if (float.TryParse(trimmedPart, out sensorValue))
+            {
+                Debug.Log("Sensor value222: " + sensorValue);
+                if (sensorValue < 200)
+                {
                     fire();
                 }
             }
             else
             {
-                Debug.LogError("Failed to parse Sensor value.");
-            }
-        }
-        else if (part.StartsWith("X:"))
-        {
-            string xPart = part.Substring(2); // Remove "X:"
-            if (float.TryParse(xPart, out xInput))
-            {
-                //Debug.Log("X value: " + xInput);
-            }
-            else
-            {
-                Debug.LogError("Failed to parse X value.");
-            }
-        }
-        else if (part.StartsWith("Y:"))
-        {
-            string yPart = part.Substring(2); // Remove "Y:"
-            if (float.TryParse(yPart, out yInput))
-            {
-                Debug.Log("Y value: " + yInput);
-            }
-            else
-            {
-                Debug.LogError("Failed to parse Y value.");
-            }
-        }
-        else if (part.StartsWith("Z:"))
-        {
-            string zPart = part.Substring(2); // Remove "Z:"
-            if (float.TryParse(zPart, out zInput))
-            {
-                //Debug.Log("Z value: " + zInput);
-            }
-            else
-            {
-                Debug.LogError("Failed to parse Z value.");
+                Debug.LogError("Failed to parse sensor value.");
             }
         }
     }
@@ -215,47 +231,58 @@ public class SecondPlayer : MonoBehaviour
     private void jumping()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.58f);
-        if (hit.collider != null) { jump = false; }
+
+        if (hit.collider != null) { 
+            jump = false; 
+        }
 
         if (hit.collider != null && hit.collider.CompareTag("Spike"))
         {
             TakeSpikeDamage(1f);
             jump = false;
         }
-
-        //Input.GetKeyDown(KeyCode.I)
-        //yInput > 1f
-        if (Input.GetKeyDown(KeyCode.I) && (!jump))
+        
+        if (yInput > 0.30f && (jumpCount < 1 || Time.time >= lastJumpTime + jumpCooldown))
         {
             _audioSource.PlayOneShot(_jumpingAudioSource, 0.5f);
-            GetComponent<Rigidbody2D>().velocity = new Vector3(0, 6f, 0);
+            GetComponent<Rigidbody2D>().velocity = new Vector3(0, 10f, 0);
             jump = true;
-        }
+
+            jumpCount++;
+            if (jumpCount > 1)
+            {
+                // Reset jump count after two jumps and start cooldown
+                jumpCount = 0;
+                lastJumpTime = Time.time;
+            }
+    }
     }
 
      private void fire()
+{
+    float angleInputFromMouse = Input.GetAxis("Mouse ScrollWheel");
+    _bulletAngle = angleInputAcc * angleAdjustmentSpeed * 10;
+
+    //Input.GetKeyDown(KeyCode.Space)
+    if (Time.time > _canFire)
     {
-        float angleInput = Input.GetAxis("Mouse ScrollWheel");
-        _bulletAngle += angleInput * angleAdjustmentSpeed;
-        if (Input.GetKeyDown(KeyCode.P) && Time.time > _canFire)
-        {
-            if (_gunType == gunType.glock) {
-                _fireRate = 0.8f;
-                FireBullet(audioClip: _pistolShotAudioSource);
-            } else if (_gunType == gunType.bombGun) {
-                _fireRate = 1.7f;
-                StartCoroutine(FireBombGunDelay());
-            } else if (_gunType == gunType.machineGun) {
-                _fireRate = 0.5f;
-                FireMachineGunBurst();
-            } else if (_gunType == gunType.awp) {
-            _fireRate = 2.5f;
+        if (_gunType == gunType.glock) {
+            _fireRate = 0.4f;
+            FireBullet(audioClip: _pistolShotAudioSource);
+        } else if (_gunType == gunType.bombGun) {
+            _fireRate = 0.85f;
+            StartCoroutine(FireBombGunDelay());
+        } else if (_gunType == gunType.machineGun) {
+            _fireRate = 0.4f;
+            FireMachineGunBurst();
+        } else if (_gunType == gunType.awp) {
+            _fireRate = 0.75f;
             FireBullet(audioClip: _awpShotAudioSource);
         }
 
-            _canFire = Time.time + _fireRate;
-        }
+        _canFire = Time.time + _fireRate;
     }
+}
 
     private IEnumerator FireBombGunDelay()
     {
@@ -273,6 +300,12 @@ public class SecondPlayer : MonoBehaviour
 
     private void FireBullet(float size = 1, AudioClip audioClip = null)
     {
+        float rotationAngle = angleInputAcc * angleAdjustmentSpeed * 10;
+        if (spriteRenderer.flipX)
+        {
+            rotationAngle = -(angleInputAcc * angleAdjustmentSpeed * 10);
+        }
+
         float bulletDirection = spriteRenderer.flipX ? -1f : 1f;
         Vector3 bulletSpawnPosition = transform.position + new Vector3(0.5f * bulletDirection, 0, 0);
         
@@ -285,7 +318,7 @@ public class SecondPlayer : MonoBehaviour
             bullet.GetComponent<Bullet>().SetGunType(getGunType());
             bullet.transform.localScale = new Vector3(bulletDirection *  0.15f, 0.15f, 0.15f);
             ApplyKnockback(gunType.bombGun);
-            GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, bulletSpawnPosition + new Vector3(0.1f * bulletDirection, -0.1f, 0), Quaternion.Euler(0, 0, 0));
+        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, currentGunPrefab.transform.position + new Vector3(0.5f * bulletDirection, 0.01f * rotationAngle, 0), Quaternion.Euler(0f, 0f, rotationAngle));
             fireEffectMaterial.transform.localScale = new Vector3(bulletDirection *  0.5f, 0.5f, 0.5f);
         } else if (_gunType == gunType.machineGun){
             GameObject bullet = Instantiate(_bulletPrefab, bulletSpawnPosition, Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
@@ -294,10 +327,10 @@ public class SecondPlayer : MonoBehaviour
             bullet.GetComponent<Bullet>().SetGunType(getGunType());
 
             GameObject bulletMaterial = Instantiate(_bulletmaterialPrefab, materialSpawnPosition, materialRotation);
-            GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, bulletSpawnPosition + new Vector3(0.1f * bulletDirection, -0.02f, 0), Quaternion.Euler(0, 0, 0));
+        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, currentGunPrefab.transform.position + new Vector3(0.35f * bulletDirection, 0.008f * rotationAngle, 0), Quaternion.Euler(0f, 0f, rotationAngle));
             fireEffectMaterial.transform.localScale = new Vector3(bulletDirection *  0.2f, 0.2f, 0.2f);
         } else if (_gunType == gunType.awp) {
-        GameObject awpbullet = Instantiate(_awpBulletPrefab, bulletSpawnPosition + new Vector3(0,-0.08f,0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
+        GameObject awpbullet = Instantiate(_awpBulletPrefab, currentGunPrefab.transform.position + new Vector3(0,-0.08f,0), Quaternion.Euler(0, 0, _bulletAngle * bulletDirection));
         awpbullet.GetComponent<Bullet>().SetBulletSize(size);
         awpbullet.GetComponent<Bullet>().SetDirection(bulletDirection);
         awpbullet.GetComponent<Bullet>().SetGunType(getGunType());
@@ -305,7 +338,7 @@ public class SecondPlayer : MonoBehaviour
         ApplyKnockback(gunType.awp);
 
         GameObject bulletMaterial = Instantiate(_bulletmaterialPrefab, materialSpawnPosition, materialRotation);
-        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, bulletSpawnPosition + new Vector3(0.25f * bulletDirection, -0.02f, 0), Quaternion.Euler(0, 0, 0));
+        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, currentGunPrefab.transform.position + new Vector3(0.5f * bulletDirection, 0.01f * rotationAngle, 0), Quaternion.Euler(0f, 0f, rotationAngle));
         fireEffectMaterial.transform.localScale = new Vector3(bulletDirection *  0.3f, 0.3f, 0.3f);
     }
         else {
@@ -315,7 +348,7 @@ public class SecondPlayer : MonoBehaviour
         bullet.GetComponent<Bullet>().SetGunType(getGunType());
 
         GameObject bulletMaterial = Instantiate(_bulletmaterialPrefab, materialSpawnPosition, materialRotation);
-        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, bulletSpawnPosition + new Vector3(0.02f * bulletDirection, -0.02f, 0), Quaternion.Euler(0, 0, 0));
+        GameObject fireEffectMaterial = Instantiate(_fireEffectPrefab, currentGunPrefab.transform.position + new Vector3(0.25f * bulletDirection, 0.005f * rotationAngle, 0), Quaternion.Euler(0f, 0f, rotationAngle));
         fireEffectMaterial.transform.localScale = new Vector3(bulletDirection *  0.2f, 0.2f, 0.2f);
     }
 
@@ -427,16 +460,20 @@ public class SecondPlayer : MonoBehaviour
 
     private void movement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal2");
-        Vector3 direction = new Vector3(horizontalInput, 0, 0);
-
-        if (xInput < 0.15 && xInput > -0.15) {
-            xInput = 0;
+        float horizontalInput = Input.GetAxis("Horizontal");
+        //Vector3 direction = new Vector3(horizontalInput, 0, 0);
+        Vector3 direction = new Vector3(0, 0, 0);
+        if (xInput < 0.25 && xInput > -0.25) {
+            direction = new Vector3(0, 0, 0);
+        }
+        if (xInput > 0.25) {
+            direction = new Vector3(-0.60f, 0, 0);
+        }
+        if (xInput < -0.25) {
+            direction = new Vector3(0.60f, 0, 0);
         }
 
-        //Vector3 direction = new Vector3(xInput*1.35f, 0, 0);
-
-                if (direction.x < 0.0f)
+        if (direction.x < 0.0f)
     { 
         spriteRenderer.flipX = true;
         if (currentGunPrefab != null)
@@ -454,46 +491,50 @@ public class SecondPlayer : MonoBehaviour
             currentGunPrefab.transform.position = transform.position + new Vector3(0.2f,-0.1f,0);
         }
     }
-
         transform.Translate(direction * _speed * Time.deltaTime);
         setBoundaries();
         crouching();
     }
 
+
     private void crouching()
     {
-        //Input.GetKeyDown(KeyCode.K)
+        //Input.GetKeyDown(KeyCode.S)
         //yInput < -0.25f
-        if (Input.GetKeyDown(KeyCode.K))
+        if (yInput < -0.25f)
         {
             Vector3 scale = transform.localScale;
-            scale.y = 0.35f;
+            scale.y = 0.5f;
             transform.localScale = scale;
         }
-
-        //Input.GetKeyUp(KeyCode.K)
+        //Input.GetKeyUp(KeyCode.S)
         //yInput > 0.25f
-        if (Input.GetKeyUp(KeyCode.K))
+        if (yInput > -0.25f)
         {
             Vector3 scale = transform.localScale;
-            scale.y = 0.7f;
+            scale.y = 1f;
             transform.localScale = scale;
         }
+        
     }
 
     private void setBoundaries()
     {
-        if (transform.position.x >= 9.257071f)
+        if (transform.position.x >= 10f)
         {
-            transform.position = new Vector3(9.25707f, transform.position.y, 0);
+            transform.position = new Vector3(10f, transform.position.y, 0);
         }
-        if (transform.position.x <= -9.245456f)
+        if (transform.position.x <= -10f)
         {
-            transform.position = new Vector3(-9.24545f, transform.position.y, 0);
+            transform.position = new Vector3(-10f, transform.position.y, 0);
         }
-        if (transform.position.y <= -3.98f)
+        if (transform.position.y <= -4f)
         {
-            transform.position = new Vector3(transform.position.x, -3.98f, 0);
+            transform.position = new Vector3(transform.position.x, -4f, 0);
+        }
+        if (transform.position.y >= 6.5f)
+        {
+            transform.position = new Vector3(transform.position.x, 6.5f, 0);
         }
     }
 
@@ -521,5 +562,9 @@ public class SecondPlayer : MonoBehaviour
     public int getScoreSP()
     {
        return _score;
+    }
+
+    public void setHealthSP(int health) {
+        healhttwo = health;
     }
 }
